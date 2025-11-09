@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->foreignId('floor_id')->constrained('floors')->onDelete('cascade');
             $table->string('room_number');
             $table->integer('capacity');
+            $table->enum('gender', ['nam', 'nu'])->default('nam');
+
             $table->integer('current_occupancy')->default(0);
             $table->decimal('price', 10, 2);
             $table->timestamps();

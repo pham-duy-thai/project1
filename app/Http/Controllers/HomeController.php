@@ -2,36 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+    /**
+     * Trang chủ hệ thống (chưa đăng nhập)
+     */
     public function index()
     {
+        // Nếu đã đăng nhập → tự động điều hướng theo role
+        if (Auth::check()) {
+            if (Auth::user()->role_id == 1) {
+                return redirect()->route('admin.dashboard');
+            } elseif (Auth::user()->role_id == 2) {
+                return redirect()->route('student.dashboard');
+            }
+        }
+
+        // Nếu chưa đăng nhập → hiển thị trang chủ mặc định (FE)
         return view('home');
     }
 
-    public function dashboard()
+    /**
+     * Dashboard dành cho Admin (layout2)
+     */
+    public function adminDashboard()
     {
-        $user = Auth::user();
-
-        if ($user->role_id == 1) {
-            return redirect()->route('layout2.theme');
-        } elseif ($user->role_id == 2) {
-            return redirect()->route('layout1.app');
-        }
-
-        abort(403, 'Không xác định vai trò người dùng.');
+        return view('admin.dashboard')->with('layout', 'layout2.theme');
     }
 
-
-    public function admin()
+    /**
+     * Dashboard dành cho Sinh viên (layout1)
+     */
+    public function studentDashboard()
     {
-        return view('layout2.theme');
-    }
-
-    public function student()
-    {
-        return view('layout1.app');
+        return view('student.dashboard')->with('layout', 'layout1.app');
     }
 }

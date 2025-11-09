@@ -13,7 +13,8 @@ return new class extends Migration {
             $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
             $table->date('registration_date');
             $table->date('end_date')->nullable();
-            $table->string('status')->default('active');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'active'])->default('pending');
+
             $table->timestamps();
         });
     }

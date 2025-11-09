@@ -4,61 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-
-        $this->middleware(function ($request, $next) {
-            if (!Auth::check()) {
-                return redirect()->route('login');
-            }
-
-            if (Auth::user()->role_id != 1) {
-                abort(403, 'Chỉ quản trị viên mới được truy cập trang này.');
-            }
-
-            return $next($request);
-        });
+        $this->middleware('role:admin');
     }
-
 
     public function index()
     {
         $roles = Role::all();
-        return view('roles.index', compact('roles'));
+        return view('admin.roles.index', compact('roles'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        return view('roles.create');
+        return view('admin.roles.create')->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate(['name' => 'required']);
-        Role::create($request->all());
-        return redirect()->route('roles.index')->with('success', 'Thêm vai trò thành công.');
+        Role::create(['name' => $r->name]);
+        return back()->with('success', 'Thêm vai trò thành công');
     }
 
-    public function edit(Role $role)
+    public function edit($id)
     {
-        return view('roles.edit', compact('role'));
+        $role = Role::findOrFail($id);
+        return view('admin.roles.edit', compact('role'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Role $role)
+    public function update(Request $r, $id)
     {
-        $request->validate(['name' => 'required']);
-        $role->update($request->all());
-        return redirect()->route('roles.index')->with('success', 'Cập nhật vai trò thành công.');
+        $role = Role::findOrFail($id);
+        $role->update(['name' => $r->name]);
+        return back()->with('success', 'Cập nhật vai trò thành công');
     }
 
-    public function destroy(Role $role)
+    public function destroy($id)
     {
-        $role->delete();
-        return back()->with('success', 'Xóa vai trò thành công.');
+        Role::destroy($id);
+        return back()->with('success', 'Xóa vai trò thành công');
     }
 }

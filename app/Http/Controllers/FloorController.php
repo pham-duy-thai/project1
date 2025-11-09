@@ -10,52 +10,44 @@ class FloorController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('role:admin');
     }
 
     public function index()
     {
-        $floors = Floor::with('building')->orderBy('building_id')->orderBy('floor_number')->get();
-        return view('floors.index', compact('floors'));
+        $floors = Floor::with('building')->get();
+        return view('admin.floors.index', compact('floors'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
         $buildings = Building::all();
-        return view('floors.create', compact('buildings'));
+        return view('admin.floors.create', compact('buildings'))->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'building_id' => 'required|exists:buildings,id',
-            'floor_number' => 'required|integer|min:1',
-        ]);
-
-        Floor::create($request->all());
-        return redirect()->route('floors.index')->with('success', 'Tầng đã được thêm.');
+        Floor::create($r->all());
+        return back()->with('success', 'Thêm tầng thành công');
     }
 
-    public function edit(Floor $floor)
+    public function edit($id)
     {
+        $floor = Floor::findOrFail($id);
         $buildings = Building::all();
-        return view('floors.edit', compact('floor', 'buildings'));
+        return view('admin.floors.edit', compact('floor', 'buildings'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Floor $floor)
+    public function update(Request $r, $id)
     {
-        $request->validate([
-            'building_id' => 'required|exists:buildings,id',
-            'floor_number' => 'required|integer|min:1',
-        ]);
-
-        $floor->update($request->all());
-        return redirect()->route('floors.index')->with('success', 'Tầng đã được cập nhật.');
+        $f = Floor::findOrFail($id);
+        $f->update($r->all());
+        return back()->with('success', 'Cập nhật tầng thành công');
     }
 
-    public function destroy(Floor $floor)
+    public function destroy($id)
     {
-        $floor->delete();
-        return redirect()->route('floors.index')->with('success', 'Tầng đã được xóa.');
+        Floor::destroy($id);
+        return back()->with('success', 'Xóa tầng thành công');
     }
 }

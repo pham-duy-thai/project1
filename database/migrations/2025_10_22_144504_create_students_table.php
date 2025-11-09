@@ -14,13 +14,17 @@ return new class extends Migration {
             $table->string('gender');
             $table->string('class');
             $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->date('date_of_birth')->nullable();
             $table->string('status')->default('active');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('students'); // ✅ chỉ cần drop toàn bảng
     }
 };

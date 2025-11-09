@@ -8,53 +8,47 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin');
+    }
+
     public function index()
     {
-        $rooms = Room::with('floor')->get();
-        return view('rooms.index', compact('rooms'));
+        $rooms = Room::with('floor.building')->get();
+        return view('admin.rooms.index', compact('rooms'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
         $floors = Floor::all();
-        return view('rooms.create', compact('floors'));
+        return view('admin.rooms.create', compact('floors'))->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'name' => 'required',
-            'floor_id' => 'required',
-            'capacity' => 'required|integer',
-            'price' => 'required|numeric',
-        ]);
-
-        Room::create($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Thêm phòng thành công');
+        $r->validate(['floor_id' => 'required', 'room_number' => 'required', 'capacity' => 'required', 'price' => 'required']);
+        Room::create($r->all());
+        return back()->with('success', 'Thêm phòng thành công');
     }
 
-    public function edit(Room $room)
+    public function edit($id)
     {
+        $room = Room::findOrFail($id);
         $floors = Floor::all();
-        return view('rooms.edit', compact('room', 'floors'));
+        return view('admin.rooms.edit', compact('room', 'floors'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Room $room)
+    public function update(Request $r, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'floor_id' => 'required',
-            'capacity' => 'required|integer',
-            'price' => 'required|numeric',
-        ]);
-
-        $room->update($request->all());
-        return redirect()->route('rooms.index')->with('success', 'Cập nhật thành công');
+        $room = Room::findOrFail($id);
+        $room->update($r->all());
+        return back()->with('success', 'Cập nhật phòng thành công');
     }
 
-    public function destroy(Room $room)
+    public function destroy($id)
     {
-        $room->delete();
-        return back()->with('success', 'Xóa thành công');
+        Room::destroy($id);
+        return back()->with('success', 'Xóa phòng thành công');
     }
 }

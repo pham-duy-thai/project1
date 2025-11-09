@@ -3,63 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
-use App\Models\Student;
-use App\Models\Room;
+use App\Models\RoomRegistration;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin');
+    }
+
     public function index()
     {
-        $contracts = Contract::with(['student', 'room'])->get();
-        return view('contracts.index', compact('contracts'));
+        $contracts = Contract::with('roomRegistration.student')->get();
+        return view('admin.contracts.index', compact('contracts'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        $students = Student::all();
-        $rooms = Room::all();
-        return view('contracts.create', compact('students', 'rooms'));
+        $registrations = RoomRegistration::where('status', 'approved')->get();
+        return view('admin.contracts.create', compact('registrations'))->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'student_id' => 'required',
-            'room_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required',
-        ]);
-
-        Contract::create($request->all());
+        Contract::create($r->all());
         return redirect()->route('contracts.index')->with('success', 'Tạo hợp đồng thành công');
     }
 
-    public function edit(Contract $contract)
+    public function edit($id)
     {
-        $students = Student::all();
-        $rooms = Room::all();
-        return view('contracts.edit', compact('contract', 'students', 'rooms'));
+        $contract = Contract::findOrFail($id);
+        $registrations = RoomRegistration::all();
+        return view('admin.contracts.edit', compact('contract', 'registrations'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Contract $contract)
+    public function update(Request $r, $id)
     {
-        $request->validate([
-            'student_id' => 'required',
-            'room_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required',
-        ]);
-
-        $contract->update($request->all());
-        return redirect()->route('contracts.index')->with('success', 'Cập nhật thành công');
+        $contract = Contract::findOrFail($id);
+        $contract->update($r->all());
+        return back()->with('success', 'Cập nhật hợp đồng thành công');
     }
 
-    public function destroy(Contract $contract)
+    public function destroy($id)
     {
-        $contract->delete();
-        return back()->with('success', 'Xóa thành công');
+        Contract::destroy($id);
+        return back()->with('success', 'Xóa hợp đồng thành công');
     }
 }

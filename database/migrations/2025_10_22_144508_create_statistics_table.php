@@ -12,8 +12,9 @@ return new class extends Migration {
             $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
             $table->integer('month');
             $table->integer('year');
-            $table->integer('total_students');
-            $table->decimal('revenue', 12, 2);
+            $table->integer('total_students')->default(0);
+            $table->decimal('revenue', 12, 2)->default(0);
+
             $table->timestamps();
         });
     }

@@ -7,45 +7,44 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin');
+    }
+
     public function index()
     {
         $services = Service::all();
-        return view('services.index', compact('services'));
+        return view('admin.services.index', compact('services'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        return view('services.create');
+        return view('admin.services.create')->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric'
-        ]);
-        Service::create($request->all());
-        return redirect()->route('services.index')->with('success', 'Thêm dịch vụ thành công');
+        Service::create($r->only('name', 'price'));
+        return back()->with('success', 'Thêm dịch vụ thành công');
     }
 
-    public function edit(Service $service)
+    public function edit($id)
     {
-        return view('services.edit', compact('service'));
+        $service = Service::findOrFail($id);
+        return view('admin.services.edit', compact('service'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Service $service)
+    public function update(Request $r, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric'
-        ]);
-        $service->update($request->all());
-        return redirect()->route('services.index')->with('success', 'Cập nhật thành công');
+        $s = Service::findOrFail($id);
+        $s->update($r->only('name', 'price'));
+        return back()->with('success', 'Cập nhật dịch vụ thành công');
     }
 
-    public function destroy(Service $service)
+    public function destroy($id)
     {
-        $service->delete();
-        return back()->with('success', 'Xóa thành công');
+        Service::destroy($id);
+        return back()->with('success', 'Xóa dịch vụ thành công');
     }
 }

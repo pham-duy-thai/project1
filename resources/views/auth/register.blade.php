@@ -89,14 +89,7 @@
                 <label class="form-label">Xác nhận mật khẩu</label>
                 <input type="password" name="password_confirmation" class="form-control" required minlength="6">
             </div>
-            <div class="mb-3">
-                <label class="form-label">Chọn vai trò</label>
-                <select name="role_id" class="form-select" required>
-                    <option value="">-- Chọn vai trò --</option>
-                    <option value="1">Admin</option>
-                    <option value="2">Sinh viên</option>
-                </select>
-            </div>
+            <input type="text" name="role_id" value="2" hidden>
             <button type="submit" class="btn btn-register w-100">Hoàn thành đăng ký</button>
         </form>
 

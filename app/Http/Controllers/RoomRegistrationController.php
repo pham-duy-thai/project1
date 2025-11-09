@@ -6,56 +6,57 @@ use App\Models\RoomRegistration;
 use App\Models\Student;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoomRegistrationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin')->except(['index', 'create', 'store']);
+        $this->middleware('role:student')->only(['index', 'create', 'store']);
+    }
+
     public function index()
     {
-        $registrations = RoomRegistration::with(['student', 'room'])->get();
-        return view('room_registrations.index', compact('registrations'));
+        if (Auth::user()->role->name === 'student') {
+            $studentId = Auth::user()->student->id;
+            $registrations = RoomRegistration::with('room')->where('student_id', $studentId)->get();
+            return view('student.registrations.index', compact('registrations'))->with('layout', 'layout1.app');
+        }
+
+        $registrations = RoomRegistration::with(['room', 'student'])->get();
+        return view('admin.registrations.index', compact('registrations'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        $students = Student::all();
         $rooms = Room::all();
-        return view('room_registrations.create', compact('students', 'rooms'));
+        return view('student.registrations.create', compact('rooms'))->with('layout', 'layout1.app');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'student_id' => 'required',
-            'room_id' => 'required',
-            'registration_date' => 'required|date',
+        $studentId = Auth::user()->student->id;
+        RoomRegistration::create([
+            'student_id' => $studentId,
+            'room_id' => $r->room_id,
+            'registration_date' => now(),
+            'status' => 'pending',
         ]);
 
-        RoomRegistration::create($request->all());
-        return redirect()->route('room-registrations.index')->with('success', 'Đăng ký phòng thành công');
+        return back()->with('success', 'Đăng ký phòng thành công, chờ duyệt.');
     }
 
-    public function edit(RoomRegistration $roomRegistration)
+    public function updateStatus($id, $status)
     {
-        $students = Student::all();
-        $rooms = Room::all();
-        return view('room_registrations.edit', compact('roomRegistration', 'students', 'rooms'));
+        $r = RoomRegistration::findOrFail($id);
+        $r->update(['status' => $status]);
+        return back()->with('success', 'Cập nhật trạng thái thành công');
     }
 
-    public function update(Request $request, RoomRegistration $roomRegistration)
+    public function destroy($id)
     {
-        $request->validate([
-            'student_id' => 'required',
-            'room_id' => 'required',
-            'registration_date' => 'required|date',
-        ]);
-
-        $roomRegistration->update($request->all());
-        return redirect()->route('room-registrations.index')->with('success', 'Cập nhật thành công');
-    }
-
-    public function destroy(RoomRegistration $roomRegistration)
-    {
-        $roomRegistration->delete();
-        return back()->with('success', 'Xóa thành công');
+        RoomRegistration::destroy($id);
+        return back()->with('success', 'Xóa đăng ký thành công');
     }
 }

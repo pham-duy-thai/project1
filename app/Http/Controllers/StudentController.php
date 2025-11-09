@@ -4,72 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin')->except(['dashboard', 'profile']);
+        $this->middleware('role:student')->only(['dashboard', 'profile']);
+    }
 
-
-    // ✅ Thêm pagination thay vì get() tất cả
     public function index()
     {
-        $students = Student::orderBy('student_code', 'asc')->paginate(20);
-        return view('students.index', compact('students'));
+        $students = Student::with('user')->get();
+        return view('admin.students.index', compact('students'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        return view('students.create');
+        return view('admin.students.create')->with('layout', 'layout2.theme');
     }
 
-    // ✅ Cải thiện validation
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'student_code' => 'required|string|max:50|unique:students,student_code',
-            'name' => 'required|string|max:255',
-            'gender' => 'required|in:Nam,Nữ,Khác',
-            'class' => 'required|string|max:50',
-            'phone' => 'nullable|regex:/^[0-9]{10,11}$/',
-        ]);
-
-        Student::create($validated);
-
-        return redirect()->route('students.index')
-            ->with('success', 'Thêm sinh viên thành công.');
+        Student::create($request->all());
+        return redirect()->route('students.index')->with('success', 'Thêm sinh viên thành công');
     }
 
-    public function show(Student $student)
+    public function edit($id)
     {
-        return view('students.show', compact('student'));
+        $student = Student::findOrFail($id);
+        return view('admin.students.edit', compact('student'))->with('layout', 'layout2.theme');
     }
 
-    public function edit(Student $student)
+    public function update(Request $request, $id)
     {
-        return view('students.edit', compact('student'));
+        $student = Student::findOrFail($id);
+        $student->update($request->all());
+        return redirect()->route('students.index')->with('success', 'Cập nhật sinh viên thành công');
     }
 
-    // ✅ Dùng $validated thay vì $request->all()
-    public function update(Request $request, Student $student)
+    public function destroy($id)
     {
-        $validated = $request->validate([
-            'student_code' => 'required|string|max:50|unique:students,student_code,' . $student->id,
-            'name' => 'required|string|max:255',
-            'gender' => 'required|in:Nam,Nữ,Khác',
-            'class' => 'required|string|max:50',
-            'phone' => 'nullable|regex:/^[0-9]{10,11}$/',
-        ]);
-
-        $student->update($validated);
-
-        return redirect()->route('students.index')
-            ->with('success', 'Cập nhật sinh viên thành công.');
+        Student::destroy($id);
+        return back()->with('success', 'Xóa sinh viên thành công');
     }
 
-    public function destroy(Student $student)
+    public function dashboard()
     {
-        $student->delete();
+        $student = Auth::user()->student;
+        return view('student.dashboard', compact('student'))->with('layout', 'layout1.app');
+    }
 
-        return redirect()->route('students.index')
-            ->with('success', 'Xóa sinh viên thành công.');
+    public function profile()
+    {
+        $student = Auth::user()->student;
+        return view('student.profile', compact('student'))->with('layout', 'layout1.app');
     }
 }

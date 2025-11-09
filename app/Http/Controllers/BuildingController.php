@@ -9,52 +9,43 @@ class BuildingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('role:admin');
     }
 
     public function index()
     {
-        $buildings = Building::orderBy('id', 'asc')->get();
-        return view('buildings.index', compact('buildings'));
+        $buildings = Building::all();
+        return view('admin.buildings.index', compact('buildings'))->with('layout', 'layout2.theme');
     }
 
     public function create()
     {
-        return view('buildings.create');
+        return view('admin.buildings.create')->with('layout', 'layout2.theme');
     }
 
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        $request->validate([
-            'name' => 'required|unique:buildings,name',
-            'total_floors' => 'required|integer|min:1',
-        ]);
-
-        Building::create($request->all());
-
-        return redirect()->route('buildings.index')->with('success', 'Tòa nhà đã được thêm thành công.');
+        $r->validate(['name' => 'required|unique:buildings']);
+        Building::create($r->only('name', 'total_floors'));
+        return back()->with('success', 'Thêm tòa nhà thành công');
     }
 
-    public function edit(Building $building)
+    public function edit($id)
     {
-        return view('buildings.edit', compact('building'));
+        $b = Building::findOrFail($id);
+        return view('admin.buildings.edit', compact('b'))->with('layout', 'layout2.theme');
     }
 
-    public function update(Request $request, Building $building)
+    public function update(Request $r, $id)
     {
-        $request->validate([
-            'name' => 'required|unique:buildings,name,' . $building->id,
-            'total_floors' => 'required|integer|min:1',
-        ]);
-
-        $building->update($request->all());
-
-        return redirect()->route('buildings.index')->with('success', 'Tòa nhà đã được cập nhật.');
+        $b = Building::findOrFail($id);
+        $b->update($r->only('name', 'total_floors'));
+        return back()->with('success', 'Cập nhật thành công');
     }
 
-    public function destroy(Building $building)
+    public function destroy($id)
     {
-        $building->delete();
-        return redirect()->route('buildings.index')->with('success', 'Tòa nhà đã được xóa.');
+        Building::destroy($id);
+        return back()->with('success', 'Xóa thành công');
     }
 }

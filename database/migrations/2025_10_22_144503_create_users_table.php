@@ -12,8 +12,9 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
-            $table->unsignedBigInteger('role_id')->default(2)->after('id');
+            // $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->foreignId('role_id')->default(1)->constrained('roles')->onDelete('restrict');
+
             $table->rememberToken(); // Dùng cho chức năng "ghi nhớ đăng nhập"
             $table->timestamps();
         });

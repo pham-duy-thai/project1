@@ -10,18 +10,18 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
     {
-        if (!Auth::check()) {
+        $user = Auth::user();
+
+        if (!$user) {
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
         if ($role === 'admin' && $user->role_id != 1) {
-            abort(403, 'Chỉ admin mới được truy cập.');
+            abort(403, 'Bạn không có quyền truy cập trang này.');
         }
 
         if ($role === 'student' && $user->role_id != 2) {
-            abort(403, 'Chỉ sinh viên mới được truy cập.');
+            abort(403, 'Bạn không có quyền truy cập trang này.');
         }
 
         return $next($request);
