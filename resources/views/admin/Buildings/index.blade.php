@@ -34,8 +34,7 @@
                             </a>
                             <form action="{{ route('buildings.destroy', $building->id) }}" method="POST"
                                 style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
+                                @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Xóa tòa này?')">
                                     <i class="fas fa-trash"></i> Xóa

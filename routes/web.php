@@ -19,34 +19,33 @@ use App\Http\Controllers\{
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes - Hệ thống Quản lý Ký túc xá
+| Web Routes - Quản lý Ký túc xá (Single Admin Version)
 |--------------------------------------------------------------------------
 |
-| Toàn bộ route được chia thành 3 phần:
-| 1. Giao diện chung (khách, login, register)
-| 2. Admin (layout2) - chỉ role_id = 1
-| 3. Student (layout1) - chỉ role_id = 2
+| Cấu trúc hệ thống:
+| 1️⃣ Public routes (login, register, home)
+| 2️⃣ Admin routes - chỉ cho admin@gmail.com
+| 3️⃣ Student routes - dành cho sinh viên
 |
 */
 
 // ======================
-// GIAO DIỆN CHUNG (CHƯA LOGIN)
+// 🏠 GIAO DIỆN CHUNG
 // ======================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Đăng nhập / đăng ký
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
 // ======================
-// ADMIN AREA (role_id = 1)
+// 🧑‍💼 ADMIN AREA (chỉ email admin@gmail.com)
 // ======================
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'adminDashboard'])->name('admin.dashboard');
@@ -82,15 +81,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Thống kê
     Route::get('statistics', [StatisticController::class, 'index'])->name('statistics.index');
 
-    // Phân quyền
+    // Phân quyền (tùy chọn, có thể bỏ)
     Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
 });
 
 
 // ======================
-// STUDENT AREA (role_id = 2)
+// 🎓 STUDENT AREA (mọi user khác admin)
 // ======================
-Route::middleware(['auth', 'role:student'])->prefix('student')->group(function () {
+Route::middleware(['auth'])->prefix('student')->group(function () {
 
     // Dashboard sinh viên
     Route::get('/dashboard', [HomeController::class, 'studentDashboard'])->name('student.dashboard');

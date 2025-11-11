@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-    use HasFactory;
+    protected $fillable = ['building_id', 'floor_number', 'room_number', 'capacity', 'price'];
 
-    protected $fillable = ['name', 'floor_id', 'capacity', 'price'];
 
     public function floor()
     {
         return $this->belongsTo(Floor::class);
     }
 
-    public function registrations()
+    public function building()
     {
-        return $this->hasMany(RoomRegistration::class);
+        // để dễ lấy tòa từ phòng
+        return $this->hasOneThrough(Building::class, Floor::class, 'id', 'id', 'floor_id', 'building_id');
     }
 }

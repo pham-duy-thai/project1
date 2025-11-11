@@ -12,16 +12,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Nếu đã đăng nhập → tự động điều hướng theo role
+        // Nếu đã đăng nhập → điều hướng theo email admin
         if (Auth::check()) {
-            if (Auth::user()->role_id == 1) {
+            if (Auth::user()->email === 'admin@gmail.com') {
                 return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->role_id == 2) {
+            } else {
                 return redirect()->route('student.dashboard');
             }
         }
 
-        // Nếu chưa đăng nhập → hiển thị trang chủ mặc định (FE)
+        // Nếu chưa đăng nhập → hiển thị giao diện trang chủ (FE)
         return view('home');
     }
 
@@ -30,6 +30,7 @@ class HomeController extends Controller
      */
     public function adminDashboard()
     {
+        // Có thể truyền thêm dữ liệu thống kê nếu cần
         return view('admin.dashboard')->with('layout', 'layout2.theme');
     }
 
@@ -38,6 +39,7 @@ class HomeController extends Controller
      */
     public function studentDashboard()
     {
+        // Có thể truyền dữ liệu cá nhân / đăng ký phòng ở đây
         return view('student.dashboard')->with('layout', 'layout1.app');
     }
 }

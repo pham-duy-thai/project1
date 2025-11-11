@@ -15,33 +15,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 🔒 Tạm tắt kiểm tra khóa ngoại để tránh lỗi ràng buộc
+        // ✅ Tạm tắt kiểm tra khóa ngoại để tránh lỗi truncate
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // --- 1️⃣ Xóa và tạo lại bảng roles ---
-        DB::table('roles')->delete();
+        // ✅ Xóa dữ liệu cũ (nếu có)
+        DB::table('students')->truncate();
+        DB::table('users')->truncate();
+        DB::table('roles')->truncate();
+
+        // ✅ 1️⃣ Tạo bảng roles cơ bản (nếu chưa có)
         DB::table('roles')->insert([
-            ['id' => 1, 'name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'name' => 'Student', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'name' => 'admin'],
+            ['id' => 2, 'name' => 'student'],
         ]);
 
-        // --- 2️⃣ Tạo tài khoản Admin ---
+        // ✅ 2️⃣ Tạo tài khoản Admin
         $admin = User::create([
-            'name' => 'Admin',
+            'name' => 'Quản trị viên',
             'email' => 'admin@gmail.com',
-            'password' => Hash::make('123456'),
-            'role_id' => 1,
+            'password' => Hash::make('123456'), // mật khẩu mặc định
+            'role_id' => 1, // Gán role Admin
         ]);
 
-        // --- 3️⃣ Tạo tài khoản Sinh viên ---
+        // ✅ 3️⃣ Tạo tài khoản Sinh viên
         $studentUser = User::create([
             'name' => 'Nguyễn Văn A',
             'email' => 'sinhvien@gmail.com',
             'password' => Hash::make('sv123456'),
-            'role_id' => 2,
+            'role_id' => 2, // Gán role Student
         ]);
 
-        // --- 4️⃣ Tạo bản ghi sinh viên tương ứng ---
+        // ✅ 4️⃣ Tạo thông tin sinh viên tương ứng
         Student::create([
             'user_id' => $studentUser->id,
             'student_code' => 'SV001',
@@ -49,12 +53,16 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Nam',
             'class' => 'DHCNTT17A',
             'phone' => '0387597051',
-            'address' => 'Hà Nội',
-            'date_of_birth' => '2003-05-22',
+            'address' => 'Nghệ An',
+            'date_of_birth' => '2003-06-15',
+            'status' => 'active',
         ]);
 
+        // ✅ Bật lại kiểm tra khóa ngoại
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $this->command->info('✅ Seeder hoàn tất! Đã tạo Admin và Sinh viên mặc định.');
+        $this->command->info('✅ Seeder hoàn tất! Đã tạo tài khoản Admin và Sinh viên mặc định.');
+        $this->command->warn('👤 Admin: admin@gmail.com / 123456');
+        $this->command->warn('🎓 Student: sinhvien@gmail.com / sv123456');
     }
 }

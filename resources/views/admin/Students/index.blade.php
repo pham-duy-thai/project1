@@ -1,6 +1,6 @@
 @extends('layout2.theme')
 
-@section('title', 'Danh sách sinh viên')
+@section('title', 'Quản lý sinh viên')
 
 @section('content')
     <div class="container-fluid px-4">
@@ -21,9 +21,7 @@
                     <th>Họ tên</th>
                     <th>Giới tính</th>
                     <th>Lớp</th>
-                    <th>Số điện thoại</th>
-                    <th>Địa chỉ</th>
-                    <th>Ngày sinh</th>
+                    <th>Điện thoại</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
@@ -37,12 +35,12 @@
                         <td>{{ $student->gender }}</td>
                         <td>{{ $student->class }}</td>
                         <td>{{ $student->phone }}</td>
-                        <td>{{ $student->address ?? '-' }}</td>
-                        <td>{{ $student->date_of_birth ? $student->date_of_birth->format('d/m/Y') : '-' }}</td>
                         <td>
-                            <span class="badge bg-{{ $student->status == 'active' ? 'success' : 'secondary' }}">
-                                {{ ucfirst($student->status) }}
-                            </span>
+                            @if ($student->status === 'active')
+                                <span class="badge bg-success">Đang hoạt động</span>
+                            @else
+                                <span class="badge bg-secondary">Ngừng</span>
+                            @endif
                         </td>
                         <td>
                             <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">
@@ -61,7 +59,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="10" class="text-center text-muted">Chưa có dữ liệu sinh viên</td>
+                        <td colspan="8" class="text-center text-muted">Chưa có sinh viên nào</td>
                     </tr>
                 @endforelse
             </tbody>

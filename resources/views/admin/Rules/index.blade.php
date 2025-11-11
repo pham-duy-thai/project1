@@ -3,6 +3,20 @@
 @section('title', 'Quản lý Nội quy')
 
 @section('content')
+    <style>
+        /* Cho bảng co giãn tự nhiên theo nội dung */
+        table {
+            table-layout: auto !important;
+            width: 100%;
+        }
+
+        /* Giới hạn cột Mô tả vừa đủ, cho phép xuống dòng */
+        td.description-cell {
+            white-space: normal !important;
+            word-break: break-word;
+        }
+    </style>
+
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách Nội quy</h2>
@@ -16,11 +30,11 @@
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark text-center">
                 <tr>
-                    <th>#</th>
-                    <th>Tiêu đề</th>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 20%">Tiêu đề</th>
                     <th>Mô tả</th>
-                    <th>Ngày tạo</th>
-                    <th>Hành động</th>
+                    <th style="width: 15%">Ngày tạo</th>
+                    <th style="width: 15%">Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +42,9 @@
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $rule->title }}</td>
-                        <td>{{ Str::limit($rule->description, 70) }}</td>
+                        <td class="description-cell">
+                            {{ $rule->description ?: '—' }}
+                        </td>
                         <td class="text-center">{{ $rule->created_at->format('d/m/Y') }}</td>
                         <td class="text-center">
                             <a href="{{ route('rules.edit', $rule->id) }}" class="btn btn-warning btn-sm">

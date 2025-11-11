@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -32,7 +31,18 @@ class AuthController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu.',
         ]);
 
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
 
+            // ✅ Nếu là admin duy nhất (email xác định)
+            if ($user->email === 'admin@gmail.com') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // ✅ Mặc định tất cả user khác là sinh viên
+            return redirect()->route('student.dashboard');
+        }
 
         return back()->withErrors([
             'email' => 'Thông tin đăng nhập không chính xác.',
@@ -56,31 +66,26 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required|in:student,admin',
         ], [
             'name.required' => 'Vui lòng nhập tên.',
             'email.required' => 'Vui lòng nhập email.',
             'email.unique' => 'Email đã được sử dụng.',
             'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
-            'role.required' => 'Vui lòng chọn vai trò.',
         ]);
 
-        // Gán role_id tương ứng
-        $role_id = $request->role === 'admin' ? 1 : 2;
-
+        // ✅ Đăng ký luôn là student (không thể tự làm admin)
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $role_id,
         ]);
 
         return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
     }
 
     /**
-     * Xử lý đăng xuất
+     * Đăng xuất
      */
     public function logout(Request $request)
     {

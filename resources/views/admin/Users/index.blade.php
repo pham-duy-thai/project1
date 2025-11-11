@@ -9,8 +9,14 @@
             <a href="{{ route('users.create') }}" class="btn btn-success">+ Thêm tài khoản</a>
         </div>
 
+        {{-- Thông báo thành công --}}
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        {{-- Thông báo lỗi --}}
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
         <table class="table table-bordered table-hover align-middle">
@@ -29,20 +35,31 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ ucfirst($user->role->name) }}</td>
                         <td>
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Xóa tài khoản này?')">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </form>
+                            {{-- Nếu là admin@gmail.com thì hiển thị "Admin", ngược lại là "Sinh viên" --}}
+                            @if ($user->email === 'admin@gmail.com')
+                                <span class="badge bg-danger">Admin</span>
+                            @else
+                                <span class="badge bg-primary">Sinh viên</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($user->email !== 'admin@gmail.com')
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Xóa tài khoản này?')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-muted">Không thể xóa/sửa admin</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

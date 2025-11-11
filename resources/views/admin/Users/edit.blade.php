@@ -1,40 +1,52 @@
 @extends('layout2.theme')
 
-@section('title', 'Cập nhật tài khoản')
+@section('title', 'Chỉnh sửa tài khoản')
 
 @section('content')
-    <div class="container-fluid px-4">
-        <h2 class="text-warning mb-4">Cập nhật tài khoản</h2>
+    <div class="container mt-4">
+        <h2 class="text-primary mb-4">Chỉnh sửa tài khoản</h2>
 
-        <form action="{{ route('users.update', $user->id) }}" method="POST" class="col-md-6">
+        {{-- Thông báo lỗi --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('users.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="mb-3">
-                <label for="name" class="form-label">Tên người dùng</label>
-                <input type="text" id="name" name="name" class="form-control"
-                    value="{{ old('name', $user->name) }}" required>
+                <label for="name" class="form-label">Họ tên</label>
+                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
+                    class="form-control" required>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" name="email" class="form-control"
-                    value="{{ old('email', $user->email) }}" required>
+                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}"
+                    class="form-control" required>
             </div>
 
             <div class="mb-3">
-                <label for="role_id" class="form-label">Vai trò</label>
-                <select id="role_id" name="role_id" class="form-select" required>
-                    @foreach ($roles as $role)
-                        <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
-                            {{ ucfirst($role->name) }}
-                        </option>
-                    @endforeach
-                </select>
+                <label for="password" class="form-label">Mật khẩu (chỉ nhập nếu muốn đổi)</label>
+                <input type="password" name="password" id="password" class="form-control"
+                    placeholder="Để trống nếu không muốn đổi mật khẩu">
             </div>
 
-            <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Cập nhật</button>
-            <a href="{{ route('users.index') }}" class="btn btn-secondary">Quay lại</a>
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Xác nhận mật khẩu (nếu đổi)</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
+                    placeholder="Nhập lại mật khẩu mới">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a href="{{ route('users.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
 @endsection
