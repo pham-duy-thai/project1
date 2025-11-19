@@ -45,7 +45,7 @@
                         <td class="description-cell">
                             {{ $rule->description ?: '—' }}
                         </td>
-                        <td class="text-center">{{ $rule->created_at->format('d/m/Y') }}</td>
+                        <td class="text-center">{{ $rule->created_at ? $rule->created_at->format('d/m/Y') : '—' }}</td>
                         <td class="text-center">
                             <a href="{{ route('rules.edit', $rule->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
