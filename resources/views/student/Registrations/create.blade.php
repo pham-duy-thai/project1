@@ -1,38 +1,64 @@
 @extends('layout1.app')
 
-@section('title', 'Đăng ký Phòng')
-
 @section('content')
-    <div class="container mt-4">
-        <h3 class="text-primary mb-4">Đăng ký Phòng Mới</h3>
+    <div class="container">
+        <h2>📝 Đăng ký Phòng Ký túc xá</h2>
+        <hr>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $err)
-                        <li>{{ $err }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="{{ route('registrations.store') }}" method="POST">
+        <form action="{{ route('student.registrations.store') }}" method="POST">
             @csrf
 
             <div class="mb-3">
-                <label class="form-label">Chọn phòng</label>
-                <select name="room_id" class="form-select" required>
+                <label for="room_id" class="form-label">Chọn phòng <span class="text-danger">*</span></label>
+                <select name="room_id" id="room_id" class="form-control @error('room_id') is-invalid @enderror" required>
                     <option value="">-- Chọn phòng --</option>
                     @foreach ($rooms as $room)
-                        <option value="{{ $room->id }}">
-                            {{ $room->building->name ?? '' }} - Phòng {{ $room->room_number }}
+                        <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                            Phòng {{ $room->room_number }} - Tòa {{ $room->building->name ?? 'N/A' }}
+                            (Còn {{ $room->capacity }} chỗ)
                         </option>
                     @endforeach
                 </select>
+                @error('room_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Đăng ký</button>
-            <a href="{{ route('registrations.index') }}" class="btn btn-secondary">Quay lại</a>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="registration_date" class="form-label">Ngày bắt đầu <span
+                            class="text-danger">*</span></label>
+                    <input type="date" name="registration_date" id="registration_date"
+                        class="form-control @error('registration_date') is-invalid @enderror"
+                        value="{{ old('registration_date') }}" required>
+                    @error('registration_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="end_date" class="form-label">Ngày kết thúc dự kiến <span
+                            class="text-danger">*</span></label>
+                    <input type="date" name="end_date" id="end_date"
+                        class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date') }}"
+                        required>
+                    @error('end_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Lưu ý:</strong> Sau khi gửi, yêu cầu của bạn sẽ ở trạng thái "Chờ duyệt".
+                Vui lòng kiểm tra thường xuyên để biết kết quả.
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">Gửi yêu cầu đăng ký</button>
+            <a href="{{ route('student.registrations.index') }}" class="btn btn-secondary btn-lg">Hủy</a>
         </form>
     </div>
 @endsection

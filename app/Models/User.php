@@ -14,6 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id', // ✅ thêm vào đây
     ];
 
     protected $hidden = [
@@ -21,6 +22,13 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    /**
+     * Quan hệ với bảng Role (1 user thuộc 1 role)
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 
     /**
      * Quan hệ với bảng Student (1 user có thể là 1 sinh viên)
@@ -35,6 +43,6 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->email === 'admin@gmail.com';
+        return $this->role?->name === 'admin';
     }
 }

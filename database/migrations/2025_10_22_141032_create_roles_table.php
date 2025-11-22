@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // admin, student, staff...
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

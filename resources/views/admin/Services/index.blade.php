@@ -19,7 +19,6 @@
                     <th>#</th>
                     <th>Tên dịch vụ</th>
                     <th>Giá (VNĐ)</th>
-                    <th>Ngày tạo</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -29,7 +28,6 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $service->name }}</td>
                         <td>{{ number_format($service->price, 0, ',', '.') }}</td>
-                        <td>{{ $service->created_at->format('d/m/Y') }}</td>
                         <td>
                             <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
@@ -47,7 +45,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">Chưa có dịch vụ nào</td>
+                        <td colspan="4" class="text-center text-muted">Chưa có dịch vụ nào</td>
                     </tr>
                 @endforelse
             </tbody>

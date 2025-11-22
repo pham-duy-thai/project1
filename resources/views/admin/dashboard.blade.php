@@ -17,7 +17,7 @@
                             <h5>Quản lý tài khoản</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('users.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.users.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                             <h5>Quản lý sinh viên</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('students.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.students.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -44,8 +44,8 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <div>
-                                <a href="{{ route('buildings.index') }}" class="text-white">Tòa nhà</a> |
-                                <a href="{{ route('floors.index') }}" class="text-white">Tầng</a>
+                                <a href="{{ route('admin.buildings.index') }}" class="text-white">Tòa nhà</a> |
+                                <a href="{{ route('admin.floors.index') }}" class="text-white">Tầng</a>
                             </div>
                             <i class="fas fa-angle-right"></i>
                         </div>
@@ -60,7 +60,7 @@
                             <h5>Quản lý phòng</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('rooms.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.rooms.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                             <h5>Quản lý nội quy</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('rules.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.rules.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                             <h5>Quản lý dịch vụ</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('services.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.services.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -102,7 +102,8 @@
                             <h5>Quản lý đăng ký phòng</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('registrations.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.registrations.index') }}" class="text-white stretched-link">Xem chi
+                                tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -115,7 +116,8 @@
                             <h5>Quản lý hợp đồng</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('contracts.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.contracts.index') }}" class="text-white stretched-link">Xem chi
+                                tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -131,7 +133,8 @@
                             <h5>Thống kê</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('statistics.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.statistics.index') }}" class="text-white stretched-link">Xem chi
+                                tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>
@@ -144,7 +147,7 @@
                             <h5>Phân quyền</h5>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ route('roles.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                            <a href="{{ route('admin.roles.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                             <i class="fas fa-angle-right"></i>
                         </div>
                     </div>

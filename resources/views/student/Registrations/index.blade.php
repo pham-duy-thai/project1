@@ -1,79 +1,64 @@
-@extends('layout1.app')
-
-@section('title', 'Đăng ký Phòng Ký túc xá')
+@extends('layou1.app')
 
 @section('content')
-    <div class="container mt-4">
+    <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="text-primary">Đăng ký phòng</h3>
-            <a href="{{ route('registrations.create') }}" class="btn btn-success">+ Đăng ký mới</a>
+            <h2>📜 Lịch sử Đăng ký Phòng</h2>
+            <a href="{{ route('student.registrations.create') }}" class="btn btn-primary">+ Đăng ký phòng mới</a>
         </div>
+        <hr>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
-        @elseif (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Phòng</th>
-                    <th>Tòa</th>
-                    <th>Ngày đăng ký</th>
-                    <th>Ngày kết thúc</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($registrations as $r)
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-primary">
                     <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ $r->room->room_number ?? '—' }}</td>
-                        <td class="text-center">{{ $r->room->building->name ?? '—' }}</td>
-                        <td class="text-center">
-                            {{ $r->registration_date ? \Carbon\Carbon::parse($r->registration_date)->format('d/m/Y') : '—' }}
-                        </td>
-                        <td class="text-center">
-                            {{ $r->end_date ? \Carbon\Carbon::parse($r->end_date)->format('d/m/Y') : '—' }}</td>
-                        <td class="text-center">
-                            @php
-                                $statusColors = [
-                                    'pending' => 'warning',
-                                    'approved' => 'primary',
-                                    'active' => 'success',
-                                    'rejected' => 'danger',
-                                    'completed' => 'secondary',
-                                ];
-                            @endphp
-                            <span class="badge bg-{{ $statusColors[$r->status] ?? 'secondary' }}">
-                                {{ ucfirst($r->status) }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            @if ($r->status === 'pending')
-                                <form action="{{ route('registrations.destroy', $r->id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Bạn có chắc muốn hủy đăng ký này?')">
-                                        <i class="fas fa-times"></i> Hủy
-                                    </button>
-                                </form>
-                            @else
-                                <span class="text-muted">—</span>
-                            @endif
-                        </td>
+                        <th>Mã ĐK</th>
+                        <th>Phòng</th>
+                        <th>Tòa nhà</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">Chưa có đăng ký nào</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-@endsection
+                </thead>
+                <tbody>
+                    @forelse($registrations as $registration)
+                        <tr>
+                            <td>{{ $registration->id }}</td>
+                            <td>{{ $registration->room->room_number ?? 'N/A' }}</td>
+                            <td>{{ $registration->room->building->name ?? 'N/A' }}</td>
+                            <td>{{ $registration->registration_date->format('d/m/Y') }}</td>
+                            <td>{{ $registration->end_date ? $registration->end_date->format('d/m/Y') : 'N/A' }}</td>
+                            <td>
+                                @switch($registration->status)
+                                    @case('pending')
+                                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                    @break
+
+                                    @case('approved')
+                                        <span class="badge bg-success">Đã duyệt</span>
+                                    @break
+
+                                    @case('rejected')
+                                        <span class="badge bg-danger">Từ chối</span>
+                                    @break
+
+                                    @case('completed')
+                                        <span class="badge bg-secondary">Hoàn thành</span>
+                                    @break
+                                @endswitch
+                            </td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Bạn chưa có đăng ký nào.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endsection

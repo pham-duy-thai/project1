@@ -1,88 +1,84 @@
 @extends('layout2.theme')
 
-@section('title', 'Chi tiết đăng ký phòng')
-
 @section('content')
-    <div class="container mt-4">
-        <h3 class="text-primary mb-4">Chi tiết Đăng ký Phòng</h3>
+    <div class="container">
+        <h2>📄 Chi tiết Đăng ký #{{ $registration->id }}</h2>
+        <hr>
 
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="mb-3 text-secondary">Thông tin sinh viên</h5>
-                <ul class="list-group mb-4">
-                    <li class="list-group-item"><strong>Họ tên:</strong> {{ $registration->student->name ?? '—' }}</li>
-                    <li class="list-group-item"><strong>Mã sinh viên:</strong>
-                        {{ $registration->student->student_code ?? '—' }}</li>
-                    <li class="list-group-item"><strong>Lớp:</strong> {{ $registration->student->class ?? '—' }}</li>
-                    <li class="list-group-item"><strong>Số điện thoại:</strong> {{ $registration->student->phone ?? '—' }}
-                    </li>
-                </ul>
-
-                <h5 class="mb-3 text-secondary">Thông tin phòng</h5>
-                <ul class="list-group mb-4">
-                    <li class="list-group-item"><strong>Tòa nhà:</strong> {{ $registration->room->building->name ?? '—' }}
-                    </li>
-                    <li class="list-group-item"><strong>Số phòng:</strong> {{ $registration->room->room_number ?? '—' }}
-                    </li>
-                    <li class="list-group-item"><strong>Tầng:</strong> {{ $registration->room->floor_number ?? '—' }}</li>
-                    <li class="list-group-item"><strong>Sức chứa:</strong> {{ $registration->room->capacity ?? '—' }} người
-                    </li>
-                    <li class="list-group-item"><strong>Giá:</strong>
-                        {{ number_format($registration->room->price ?? 0, 0, ',', '.') }} VNĐ</li>
-                </ul>
-
-                <h5 class="mb-3 text-secondary">Trạng thái đăng ký</h5>
-                <ul class="list-group mb-4">
-                    <li class="list-group-item">
-                        <strong>Trạng thái hiện tại:</strong>
-                        @php
-                            $colors = [
-                                'pending' => 'warning',
-                                'approved' => 'primary',
-                                'active' => 'success',
-                                'rejected' => 'danger',
-                                'completed' => 'secondary',
-                            ];
-                        @endphp
-                        <span class="badge bg-{{ $colors[$registration->status] ?? 'secondary' }}">
-                            {{ ucfirst($registration->status) }}
-                        </span>
-                    </li>
-                    <li class="list-group-item"><strong>Ngày đăng ký:</strong>
-                        {{ $registration->registration_date ? \Carbon\Carbon::parse($registration->registration_date)->format('d/m/Y') : '—' }}
-                    </li>
-                    <li class="list-group-item"><strong>Ngày kết thúc:</strong>
-                        {{ $registration->end_date ? \Carbon\Carbon::parse($registration->end_date)->format('d/m/Y') : '—' }}
-                    </li>
-                </ul>
-
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('admin.registrations.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay lại
-                    </a>
-
-                    @if ($registration->status === 'pending')
-                        <a href="{{ url('admin/registrations/update-status/' . $registration->id . '/approved') }}"
-                            class="btn btn-success" onclick="return confirm('Duyệt đăng ký này?')">
-                            <i class="fas fa-check"></i> Duyệt
-                        </a>
-                        <a href="{{ url('admin/registrations/update-status/' . $registration->id . '/rejected') }}"
-                            class="btn btn-danger" onclick="return confirm('Từ chối đăng ký này?')">
-                            <i class="fas fa-times"></i> Từ chối
-                        </a>
-                    @elseif ($registration->status === 'approved')
-                        <a href="{{ url('admin/registrations/update-status/' . $registration->id . '/active') }}"
-                            class="btn btn-primary" onclick="return confirm('Chuyển sang trạng thái đang ở?')">
-                            <i class="fas fa-door-open"></i> Kích hoạt
-                        </a>
-                    @elseif ($registration->status === 'active')
-                        <a href="{{ url('admin/registrations/end/' . $registration->id) }}" class="btn btn-secondary"
-                            onclick="return confirm('Kết thúc hợp đồng này?')">
-                            <i class="fas fa-sign-out-alt"></i> Kết thúc
-                        </a>
-                    @endif
-                </div>
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Thông tin Sinh viên
             </div>
+            <div class="card-body">
+                <p><strong>Họ tên:</strong> {{ $registration->student->name ?? 'N/A' }}</p>
+                <p><strong>Mã SV:</strong> {{ $registration->student->student_code ?? 'N/A' }}</p>
+                <p><strong>Lớp:</strong> {{ $registration->student->class ?? 'N/A' }}</p>
+                <p><strong>Số điện thoại:</strong> {{ $registration->student->phone ?? 'N/A' }}</p>
+                <p><strong>Địa chỉ:</strong> {{ $registration->student->address ?? 'N/A' }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white">
+                Thông tin Phòng
+            </div>
+            <div class="card-body">
+                <p><strong>Số phòng:</strong> {{ $registration->room->room_number ?? 'N/A' }}</p>
+                <p><strong>Tòa nhà:</strong> {{ $registration->room->building->name ?? 'N/A' }}</p>
+                <p><strong>Sức chứa còn lại:</strong> {{ $registration->room->capacity ?? 0 }} người</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-success text-white">
+                Thông tin Đăng ký
+            </div>
+            <div class="card-body">
+                <p><strong>Ngày đăng ký:</strong> {{ $registration->registration_date->format('d/m/Y') }}</p>
+                <p><strong>Ngày kết thúc dự kiến:</strong>
+                    {{ $registration->end_date ? $registration->end_date->format('d/m/Y') : 'Chưa xác định' }}</p>
+                <p><strong>Trạng thái:</strong>
+                    @switch($registration->status)
+                        @case('pending')
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                        @break
+
+                        @case('approved')
+                            <span class="badge bg-success">Đã duyệt</span>
+                        @break
+
+                        @case('rejected')
+                            <span class="badge bg-danger">Từ chối</span>
+                        @break
+
+                        @case('completed')
+                            <span class="badge bg-secondary">Hoàn thành</span>
+                        @break
+                    @endswitch
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ route('admin.registrations.index') }}" class="btn btn-secondary">← Quay lại</a>
+
+            @if ($registration->status == 'pending')
+                <form action="{{ route('admin.registrations.approve', $registration) }}" method="POST"
+                    style="display:inline;">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận duyệt?')">✓
+                        Duyệt</button>
+                </form>
+
+                <form action="{{ route('admin.registrations.reject', $registration) }}" method="POST"
+                    style="display:inline;">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Xác nhận từ chối?')">✗ Từ
+                        chối</button>
+                </form>
+            @endif
         </div>
     </div>
 @endsection

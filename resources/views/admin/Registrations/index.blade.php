@@ -1,97 +1,98 @@
 @extends('layout2.theme')
 
-@section('title', 'Quản lý đăng ký phòng')
-
 @section('content')
-    <div class="container-fluid mt-4">
-        <h3 class="text-primary mb-4">Danh sách Đăng ký Phòng</h3>
+    <div class="container">
+        <h2>📋 Quản lý Đăng ký Phòng</h2>
+        <hr>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
-        @elseif (session('error'))
+        @endif
+
+        @if (session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Sinh viên</th>
-                    <th>Phòng</th>
-                    <th>Tòa</th>
-                    <th>Ngày đăng ký</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($registrations as $r)
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
                     <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $r->student->name ?? '—' }}</td>
-                        <td class="text-center">{{ $r->room->room_number ?? '—' }}</td>
-                        <td class="text-center">{{ $r->room->building->name ?? '—' }}</td>
-                        <td class="text-center">
-                            {{ $r->registration_date ? \Carbon\Carbon::parse($r->registration_date)->format('d/m/Y') : '—' }}
-                        </td>
-                        <td class="text-center">
-                            @php
-                                $colors = [
-                                    'pending' => 'warning',
-                                    'approved' => 'primary',
-                                    'active' => 'success',
-                                    'rejected' => 'danger',
-                                    'completed' => 'secondary',
-                                ];
-                            @endphp
-                            <span class="badge bg-{{ $colors[$r->status] ?? 'secondary' }}">
-                                {{ ucfirst($r->status) }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ route('admin.registrations.show', $r->id) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-eye"></i> Xem
-                            </a>
-
-                            @if ($r->status === 'pending')
-                                <a href="{{ url('admin/registrations/update-status/' . $r->id . '/approved') }}"
-                                    class="btn btn-success btn-sm" onclick="return confirm('Duyệt đăng ký này?')">
-                                    <i class="fas fa-check"></i> Duyệt
-                                </a>
-                                <a href="{{ url('admin/registrations/update-status/' . $r->id . '/rejected') }}"
-                                    class="btn btn-danger btn-sm" onclick="return confirm('Từ chối đăng ký này?')">
-                                    <i class="fas fa-times"></i> Từ chối
-                                </a>
-                            @elseif ($r->status === 'approved')
-                                <a href="{{ url('admin/registrations/update-status/' . $r->id . '/active') }}"
-                                    class="btn btn-primary btn-sm"
-                                    onclick="return confirm('Chuyển sang trạng thái đang ở?')">
-                                    <i class="fas fa-door-open"></i> Kích hoạt
-                                </a>
-                            @elseif ($r->status === 'active')
-                                <a href="{{ url('admin/registrations/end/' . $r->id) }}" class="btn btn-secondary btn-sm"
-                                    onclick="return confirm('Kết thúc hợp đồng này?')">
-                                    <i class="fas fa-sign-out-alt"></i> Kết thúc
-                                </a>
-                            @endif
-
-                            <form action="{{ route('registrations.destroy', $r->id) }}" method="POST"
-                                style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                    onclick="return confirm('Xóa đăng ký này?')">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </form>
-                        </td>
+                        <th>Mã ĐK</th>
+                        <th>Sinh viên</th>
+                        <th>Mã SV</th>
+                        <th>Phòng</th>
+                        <th>Tòa nhà</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">Chưa có đăng ký nào</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-@endsection
+                </thead>
+                <tbody>
+                    @forelse($registrations as $registration)
+                        <tr>
+                            <td>{{ $registration->id }}</td>
+                            <td>{{ $registration->student->name ?? 'N/A' }}</td>
+                            <td>{{ $registration->student->student_code ?? 'N/A' }}</td>
+                            <td>{{ $registration->room->room_number ?? 'N/A' }}</td>
+                            <td>{{ $registration->room->building->name ?? 'N/A' }}</td>
+                            <td>{{ $registration->registration_date->format('d/m/Y') }}</td>
+                            <td>{{ $registration->end_date ? $registration->end_date->format('d/m/Y') : 'N/A' }}</td>
+                            <td>
+                                @switch($registration->status)
+                                    @case('pending')
+                                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                    @break
+
+                                    @case('approved')
+                                        <span class="badge bg-success">Đã duyệt</span>
+                                    @break
+
+                                    @case('rejected')
+                                        <span class="badge bg-danger">Từ chối</span>
+                                    @break
+
+                                    @case('completed')
+                                        <span class="badge bg-secondary">Hoàn thành</span>
+                                    @break
+                                @endswitch
+                            </td>
+                            <td>
+                                @if ($registration->status == 'pending')
+                                    <form action="{{ route('admin.registrations.approve', $registration) }}" method="POST"
+                                        style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-success"
+                                            onclick="return confirm('Xác nhận duyệt đăng ký này?')">
+                                            ✓ Duyệt
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('admin.registrations.reject', $registration) }}" method="POST"
+                                        style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Xác nhận từ chối?')">
+                                            ✗ Từ chối
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-muted">Đã xử lý</span>
+                                @endif
+
+                                <a href="{{ route('admin.registrations.show', $registration) }}"
+                                    class="btn btn-sm btn-info">👁 Xem</a>
+                            </td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center">Không có đăng ký nào.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endsection

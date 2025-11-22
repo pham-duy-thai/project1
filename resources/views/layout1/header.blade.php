@@ -2,7 +2,7 @@
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
         <a href="{{ route('home') }}" class="logo d-flex align-items-center me-auto">
-            <h1 class="sitename">Learner</h1>
+            <h1 class="sitename">Ký túc xá</h1>
         </a>
 
         @include('layout1.nav')
@@ -19,11 +19,6 @@
                         <li>
                             <a class="dropdown-item" href="#">
                                 <i class="bi bi-person me-2"></i>Hồ sơ
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-gear me-2"></i>Cài đặt
                             </a>
                         </li>
                         <li>

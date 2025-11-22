@@ -9,5 +9,16 @@ class Statistic extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['month', 'year', 'total_students', 'total_income', 'total_expenses'];
+    protected $fillable = [
+        'room_id',
+        'month',
+        'year',
+        'total_students',
+        'revenue',
+    ];
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 }

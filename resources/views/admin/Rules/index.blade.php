@@ -45,11 +45,17 @@
                         <td class="description-cell">
                             {{ $rule->description ?: '—' }}
                         </td>
-                        <td class="text-center">{{ $rule->created_at->format('d/m/Y') }}</td>
+
+                        <!-- ĐÃ SỬA created_at NULL -->
+                        <td class="text-center">
+                            {{ optional($rule->created_at)->format('d/m/Y') }}
+                        </td>
+
                         <td class="text-center">
                             <a href="{{ route('rules.edit', $rule->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
+
                             <form action="{{ route('rules.destroy', $rule->id) }}" method="POST"
                                 style="display:inline-block;">
                                 @csrf
