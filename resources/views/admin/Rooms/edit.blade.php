@@ -2,99 +2,91 @@
 
 @section('content')
     <div class="container mt-4">
-        <h4 class="mb-4">Chỉnh Sửa Phòng</h4>
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $err)
-                        <li>{{ $err }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('rooms.update', $room->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            {{-- 🔹 Chọn Tòa Nhà --}}
-            <div class="mb-3">
-                <label class="form-label">Chọn Tòa Nhà</label>
-                <select id="buildingSelect" name="building_id" class="form-select" required>
-                    <option value="">-- Chọn tòa nhà --</option>
-                    @foreach ($buildings as $building)
-                        <option value="{{ $building->id }}" data-total="{{ $building->total_floors }}"
-                            {{ $room->building_id == $building->id ? 'selected' : '' }}>
-                            {{ $building->name }} ({{ $building->total_floors }} tầng)
-                        </option>
-                    @endforeach
-                </select>
+        <div class="card">
+            <div class="card-header">
+                <h4>Chỉnh sửa phòng</h4>
             </div>
 
-            {{-- 🔹 Chọn Tầng --}}
-            <div class="mb-3">
-                <label class="form-label">Chọn Tầng</label>
-                <select name="floor_number" id="floorSelect" class="form-select" required>
-                    <option value="">-- Chọn tầng --</option>
-                </select>
-            </div>
+            <div class="card-body">
 
-            {{-- 🔹 Số phòng --}}
-            <div class="mb-3">
-                <label class="form-label">Số phòng</label>
-                <input type="text" name="room_number" class="form-control"
-                    value="{{ old('room_number', $room->room_number) }}" required>
-            </div>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-            {{-- 🔹 Sức chứa --}}
-            <div class="mb-3">
-                <label class="form-label">Sức chứa</label>
-                <input type="number" name="capacity" class="form-control" min="1"
-                    value="{{ old('capacity', $room->capacity) }}" required>
-            </div>
+                <form action="{{ route('admin.rooms.update', $room->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
 
-            {{-- 🔹 Giới tính --}}
-            <div class="mb-3">
-                <label class="form-label">Giới tính</label>
-                <select name="gender" class="form-select" required>
-                    <option value="nam" {{ $room->gender == 'nam' ? 'selected' : '' }}>Nam</option>
-                    <option value="nu" {{ $room->gender == 'nu' ? 'selected' : '' }}>Nữ</option>
-                </select>
-            </div>
+                    {{-- Building --}}
+                    <div class="mb-3">
+                        <label class="form-label">Tòa nhà</label>
+                        <select name="building_id" class="form-control">
+                            <option value="">-- Chọn tòa nhà --</option>
+                            @foreach ($buildings as $building)
+                                <option value="{{ $building->id }}"
+                                    {{ $building->id == $room->building_id ? 'selected' : '' }}>
+                                    {{ $building->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            {{-- 🔹 Giá phòng --}}
-            <div class="mb-3">
-                <label class="form-label">Giá phòng (VNĐ)</label>
-                <input type="number" name="price" class="form-control" min="0" step="100000"
-                    value="{{ old('price', $room->price) }}" required>
-            </div>
+                    {{-- Floor number --}}
+                    <div class="mb-3">
+                        <label class="form-label">Số tầng</label>
+                        <input type="number" name="floor_number" class="form-control"
+                            value="{{ old('floor_number', $room->floor_number) }}" min="1" required>
+                    </div>
 
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
-            <a href="{{ route('rooms.index') }}" class="btn btn-secondary">Quay lại</a>
-        </form>
+                    {{-- Room number --}}
+                    <div class="mb-3">
+                        <label class="form-label">Số phòng</label>
+                        <input type="text" name="room_number" class="form-control"
+                            value="{{ old('room_number', $room->room_number) }}" required>
+                    </div>
+
+                    {{-- Capacity --}}
+                    <div class="mb-3">
+                        <label class="form-label">Sức chứa</label>
+                        <input type="number" name="capacity" class="form-control"
+                            value="{{ old('capacity', $room->capacity) }}" min="1" required>
+                    </div>
+
+                    {{-- Gender --}}
+                    <div class="mb-3">
+                        <label class="form-label">Giới tính</label>
+                        <select name="gender" class="form-control" required>
+                            <option value="nam" {{ $room->gender == 'nam' ? 'selected' : '' }}>Nam</option>
+                            <option value="nu" {{ $room->gender == 'nu' ? 'selected' : '' }}>Nữ</option>
+                        </select>
+                    </div>
+
+                    {{-- Current Occupancy --}}
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng đang ở</label>
+                        <input type="number" name="current_occupancy" class="form-control"
+                            value="{{ old('current_occupancy', $room->current_occupancy) }}" min="0"
+                            max="{{ $room->capacity }}">
+                    </div>
+
+                    {{-- Price --}}
+                    <div class="mb-3">
+                        <label class="form-label">Giá phòng (VND)</label>
+                        <input type="number" step="0.01" name="price" class="form-control"
+                            value="{{ old('price', $room->price) }}">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <a href="{{ route('admin.rooms.index') }}" class="btn btn-secondary">Hủy</a>
+                </form>
+
+            </div>
+        </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-                    const buildingSelect = document.getElementById('buildingSelect');
-                    const floorSelect = document.getElementById('floorSelect');
-                    const currentFloor = {{ $room->floor_number }};
-
-                    function populateFloors(totalFloors) {
-                        floorSelect.innerHTML = '<option value="">-- Chọn tầng --</option>';
-                        for (let i = 1; i <= totalFloors; i++) {
-                            const opt = document.createElement('option');
-                            opt.value = i;
-                            opt.textContent = 'Tầng ' + i;
-                            if (i === currentFloor) opt.selected = true;
-                            floorSelect.appendChild(opt);
-                        }
-                    }
-
-                    buildingSelect.addEventListener('change', function() {
-                        const totalFloors = parseInt(this.selectedOptions[0].dataset.total || 0);
-                        if (totalFloors > 0) populateFloors(totalFloors);
-                    });
-
-                    //
+@endsection

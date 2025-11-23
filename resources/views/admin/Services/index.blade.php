@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách Dịch vụ</h2>
-            <a href="{{ route('services.create') }}" class="btn btn-success">+ Thêm Dịch vụ</a>
+            <a href="{{ route('admin.services.create') }}" class="btn btn-success">+ Thêm Dịch vụ</a>
         </div>
 
         @if (session('success'))
@@ -29,10 +29,10 @@
                         <td>{{ $service->name }}</td>
                         <td>{{ number_format($service->price, 0, ',', '.') }}</td>
                         <td>
-                            <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning btn-sm">
+                            <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-                            <form action="{{ route('services.destroy', $service->id) }}" method="POST"
+                            <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST"
                                 style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')

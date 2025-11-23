@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách tài khoản</h2>
-            <a href="{{ route('users.create') }}" class="btn btn-success">+ Thêm tài khoản</a>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-success">+ Thêm tài khoản</a>
         </div>
 
         {{-- Thông báo thành công --}}
@@ -45,10 +45,10 @@
                         </td>
                         <td>
                             @if ($user->email !== 'admin@gmail.com')
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                     style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')

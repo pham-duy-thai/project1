@@ -29,7 +29,8 @@
         @endif
 
         {{-- Form lưu --}}
-        <form action="{{ $type === 'building' ? route('buildings.store') : route('floors.store') }}" method="POST">
+        <form action="{{ $type === 'building' ? route('admin.buildings.store') : route('admin.floors.store') }}"
+            method="POST">
             @csrf
 
             {{-- 🔹 Form cho TÒA NHÀ --}}
@@ -65,7 +66,7 @@
             @endif
 
             <button type="submit" class="btn btn-primary">Thêm</button>
-            <a href="{{ $type === 'building' ? route('buildings.index') : route('floors.index') }}"
+            <a href="{{ $type === 'building' ? route('admin.buildings.index') : route('floors.index') }}"
                 class="btn btn-secondary">Quay lại</a>
         </form>
     </div>

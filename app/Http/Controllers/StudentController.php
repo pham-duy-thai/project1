@@ -58,7 +58,7 @@ class StudentController extends Controller
 
         Student::create($request->all());
 
-        return redirect()->route('students.index')->with('success', 'Thêm sinh viên thành công!');
+        return redirect()->route('admin.students.index')->with('success', 'Thêm sinh viên thành công!');
     }
 
     /**
@@ -96,7 +96,7 @@ class StudentController extends Controller
 
         $student->update($request->all());
 
-        return redirect()->route('students.index')->with('success', 'Cập nhật sinh viên thành công!');
+        return redirect()->route('admin.students.index')->with('success', 'Cập nhật sinh viên thành công!');
     }
 
     /**

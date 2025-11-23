@@ -4,13 +4,13 @@
 
         @auth
             @if (auth()->user()->role_id == 1)
-                <li><a href="{{ route('dashboard') }}">Quản trị</a></li>
-                <li><a href="{{ route('students.index') }}">Sinh viên</a></li>
-                <li><a href="{{ route('rooms.index') }}">Phòng</a></li>
-                <li><a href="{{ route('registrations.index') }}">Đăng ký phòng</a></li>
+                <li><a href="{{ route('admin.dashboard') }}">Quản trị</a></li>
+                <li><a href="{{ route('admin.students.index') }}">Sinh viên</a></li>
+                <li><a href="{{ route('admin.rooms.index') }}">Phòng</a></li>
+                <li><a href="{{ route('admin.registrations.index') }}">Đăng ký phòng</a></li>
             @elseif(auth()->user()->role_id == 2)
                 <li><a href="{{ route('student.dashboard') }}">Trang của tôi</a></li>
-                <li><a href="{{ route('registrations.index') }}">Đăng ký phòng</a></li>
+                <li><a href="{{ route('student.registrations.index') }}">Đăng ký phòng</a></li>
             @endif
         @else
             <li><a href="#about">Giới thiệu</a></li>

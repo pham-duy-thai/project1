@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách Tòa nhà</h2>
-            <a href="{{ route('buildings.create') }}" class="btn btn-success">+ Thêm Tòa</a>
+            <a href="{{ route('admin.buildings.create') }}" class="btn btn-success">+ Thêm Tòa</a>
         </div>
 
         @if (session('success'))
@@ -29,10 +29,10 @@
                         <td>{{ $building->name }}</td>
                         <td>{{ $building->total_floors }}</td>
                         <td>
-                            <a href="{{ route('buildings.edit', $building->id) }}" class="btn btn-warning btn-sm">
+                            <a href="{{ route('admin.buildings.edit', $building->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-                            <form action="{{ route('buildings.destroy', $building->id) }}" method="POST"
+                            <form action="{{ route('admin.buildings.destroy', $building->id) }}" method="POST"
                                 style="display:inline-block;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm"

@@ -16,7 +16,7 @@
             </div>
         @endif
 
-        <form action="{{ route('students.update', $student->id) }}" method="POST">
+        <form action="{{ route('admin.students.update', $student->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -61,7 +61,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Cập nhật</button>
-            <a href="{{ route('students.index') }}" class="btn btn-secondary">Hủy</a>
+            <a href="{{ route('admin.students.index') }}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
 @endsection

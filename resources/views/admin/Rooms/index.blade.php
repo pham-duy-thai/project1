@@ -8,7 +8,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <a href="{{ route('rooms.create') }}" class="btn btn-success mb-3">+ Thêm phòng</a>
+        <a href="{{ route('admin.rooms.create') }}" class="btn btn-success mb-3">+ Thêm phòng</a>
 
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-dark text-center">
@@ -36,8 +36,8 @@
                         <td>{{ number_format($room->price, 0, ',', '.') }}</td>
                         <td>{{ $room->current_occupancy }}</td>
                         <td>
-                            <a href="{{ route('rooms.edit', $room->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                            <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" class="d-inline">
+                            <a href="{{ route('admin.rooms.edit', $room->id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                            <form action="{{ route('admin.rooms.destroy', $room->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger"

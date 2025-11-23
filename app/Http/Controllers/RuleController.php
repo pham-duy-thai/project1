@@ -61,7 +61,7 @@ class RuleController extends Controller
 
         Rule::create($validated);
 
-        return redirect()->route('rules.index')->with('success', 'Thêm nội quy thành công!');
+        return redirect()->route('admin.rules.index')->with('success', 'Thêm nội quy thành công!');
     }
 
     /**
@@ -97,7 +97,7 @@ class RuleController extends Controller
 
         $rule->update($validated);
 
-        return redirect()->route('rules.index')->with('success', 'Cập nhật nội quy thành công!');
+        return redirect()->route('admin.rules.index')->with('success', 'Cập nhật nội quy thành công!');
     }
 
     /**

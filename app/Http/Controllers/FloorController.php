@@ -43,7 +43,7 @@ class FloorController extends Controller
         ]);
 
         Floor::create($r->only('building_id', 'floor_number'));
-        return redirect()->route('floors.index')->with('success', 'Thêm tầng thành công!');
+        return redirect()->route('admin.floors.index')->with('success', 'Thêm tầng thành công!');
     }
 
     // Form sửa
@@ -69,7 +69,7 @@ class FloorController extends Controller
         $floor = Floor::findOrFail($id);
         $floor->update($r->only('building_id', 'floor_number'));
 
-        return redirect()->route('floors.index')->with('success', 'Cập nhật tầng thành công!');
+        return redirect()->route('admin.floors.index')->with('success', 'Cập nhật tầng thành công!');
     }
 
     // Xóa

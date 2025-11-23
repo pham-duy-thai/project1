@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách Tầng</h2>
-            <a href="{{ route('floors.create') }}" class="btn btn-success">+ Thêm Tầng</a>
+            <a href="{{ route('admin.floors.create') }}" class="btn btn-success">+ Thêm Tầng</a>
         </div>
 
         @if (session('success'))
@@ -29,9 +29,9 @@
                         <td>{{ $floor->building->name }}</td>
                         <td>{{ $floor->floor_number }}</td>
                         <td>
-                            <a href="{{ route('floors.edit', $floor->id) }}" class="btn btn-warning btn-sm"><i
+                            <a href="{{ route('admin.floors.edit', $floor->id) }}" class="btn btn-warning btn-sm"><i
                                     class="fas fa-edit"></i> Sửa</a>
-                            <form action="{{ route('floors.destroy', $floor->id) }}" method="POST"
+                            <form action="{{ route('admin.floors.destroy', $floor->id) }}" method="POST"
                                 style="display:inline-block;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm"

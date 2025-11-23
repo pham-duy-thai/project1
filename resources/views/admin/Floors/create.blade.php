@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <h2 class="text-success mb-4">Thêm tầng mới</h2>
 
-        <form action="{{ route('floors.store') }}" method="POST" class="col-md-6">
+        <form action="{{ route('admin.floors.store') }}" method="POST" class="col-md-6">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Tòa nhà</label>
@@ -24,7 +24,7 @@
             </div>
 
             <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu</button>
-            <a href="{{ route('floors.index') }}" class="btn btn-secondary">Quay lại</a>
+            <a href="{{ route('admin.floors.index') }}" class="btn btn-secondary">Quay lại</a>
         </form>
     </div>
 @endsection

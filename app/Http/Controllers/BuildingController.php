@@ -41,7 +41,7 @@ class BuildingController extends Controller
         ]);
 
         Building::create($r->only('name', 'total_floors'));
-        return redirect()->route('buildings.index')->with('success', 'Thêm tòa nhà thành công!');
+        return redirect()->route('admin.buildings.index')->with('success', 'Thêm tòa nhà thành công!');
     }
 
     // Form sửa
@@ -64,7 +64,7 @@ class BuildingController extends Controller
 
         $building = Building::findOrFail($id);
         $building->update($r->only('name', 'total_floors'));
-        return redirect()->route('buildings.index')->with('success', 'Cập nhật thành công!');
+        return redirect()->route('admin.buildings.index')->with('success', 'Cập nhật thành công!');
     }
 
     // Xóa

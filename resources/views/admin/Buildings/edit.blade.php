@@ -30,7 +30,7 @@
 
         {{-- Form cập nhật --}}
         <form
-            action="{{ $type === 'building' ? route('buildings.update', $building->id) : route('floors.update', $floor->id) }}"
+            action="{{ $type === 'building' ? route('admin.buildings.update', $building->id) : route('admin.floors.update', $floor->id) }}"
             method="POST">
             @csrf
             @method('PUT')
@@ -73,7 +73,7 @@
             @endif
 
             <button type="submit" class="btn btn-primary">Cập nhật</button>
-            <a href="{{ $type === 'building' ? route('buildings.index') : route('floors.index') }}"
+            <a href="{{ $type === 'building' ? route('admin.buildings.index') : route('floors.index') }}"
                 class="btn btn-secondary">Quay lại</a>
         </form>
     </div>

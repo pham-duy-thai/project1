@@ -8,28 +8,7 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Quick Add (Thêm nhanh) - visible on md+ -->
-    <ul class="navbar-nav d-none d-md-flex me-2">
-        <li class="nav-item dropdown">
-            <a class="nav-link text-white" id="quickAdd" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false" title="Thêm nhanh">
-                <i class="fas fa-plus-circle"></i>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="quickAdd">
-                <li><a class="dropdown-item" href="registration-new.html"><i class="fas fa-clipboard-list me-2"></i>Đăng
-                        ký phòng</a></li>
-                <li><a class="dropdown-item" href="contract-create.html"><i class="fas fa-file-contract me-2"></i>Tạo
-                        hợp đồng</a></li>
-                <li><a class="dropdown-item" href="maintenance-new.html"><i class="fas fa-tools me-2"></i>Ghi nhận bảo
-                        trì</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="students-add.html"><i class="fas fa-user-graduate me-2"></i>Thêm sinh
-                        viên</a></li>
-            </ul>
-        </li>
-    </ul>
+
 
     <!-- Navbar Search (chuyển sang right on small screens) -->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" role="search"
@@ -81,28 +60,6 @@
             </ul>
         </li>
 
-        <!-- Messages -->
-        <li class="nav-item dropdown">
-            <a class="nav-link position-relative" id="messagesDropdown" href="#" role="button"
-                data-bs-toggle="dropdown" aria-expanded="false" title="Tin nhắn">
-                <i class="fas fa-envelope fa-fw"></i>
-                <span class="badge bg-success rounded-pill position-absolute top-0 start-100 translate-middle"
-                    id="msgBadge">1</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="messagesDropdown" style="min-width:300px;">
-                <li class="dropdown-header">Tin nhắn</li>
-                <li>
-                    <a class="dropdown-item" href="messages.html">
-                        <div class="small text-truncate"><strong>Nguyễn A</strong>: Yêu cầu chuyển phòng...</div>
-                        <small class="text-muted">2 giờ trước</small>
-                    </a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item text-center" href="messages.html">Xem tất cả tin nhắn</a></li>
-            </ul>
-        </li>
 
         <!-- User dropdown -->
         <li class="nav-item dropdown">
@@ -120,9 +77,17 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="logout.html"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                        </button>
+                    </form>
                 </li>
-            </ul>
+
         </li>
+    </ul>
+    </li>
     </ul>
 </nav>

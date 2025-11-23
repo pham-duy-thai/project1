@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-primary">Danh sách sinh viên</h2>
-            <a href="{{ route('students.create') }}" class="btn btn-success">+ Thêm sinh viên</a>
+            <a href="{{ route('admin.students.create') }}" class="btn btn-success">+ Thêm sinh viên</a>
         </div>
 
         @if (session('success'))
@@ -43,10 +43,10 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">
+                            <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-                            <form action="{{ route('students.destroy', $student->id) }}" method="POST"
+                            <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST"
                                 style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')

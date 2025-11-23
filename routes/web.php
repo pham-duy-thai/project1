@@ -18,17 +18,6 @@ use App\Http\Controllers\{
     RoleController
 };
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes - Quản lý Ký túc xá (Single Admin Version)
-|--------------------------------------------------------------------------
-|
-| Cấu trúc hệ thống:
-| 1️⃣ Public routes (login, register, home)
-| 2️⃣ Admin routes - chỉ cho admin@gmail.com
-| 3️⃣ Student routes - dành cho sinh viên
-|
-*/
 
 // ======================
 // 🏠 GIAO DIỆN CHUNG

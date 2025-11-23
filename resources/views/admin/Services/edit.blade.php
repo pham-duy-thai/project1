@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <h2 class="text-warning mb-4">Cập nhật Dịch vụ</h2>
 
-        <form action="{{ route('services.update', $service->id) }}" method="POST" class="col-md-6">
+        <form action="{{ route('admin.services.update', $service->id) }}" method="POST" class="col-md-6">
             @csrf
             @method('PUT')
 
@@ -22,7 +22,7 @@
             </div>
 
             <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Cập nhật</button>
-            <a href="{{ route('services.index') }}" class="btn btn-secondary">Quay lại</a>
+            <a href="{{ route('admin.services.index') }}" class="btn btn-secondary">Quay lại</a>
         </form>
     </div>
 @endsection
