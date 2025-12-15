@@ -13,6 +13,12 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Allow direct access to storage files
+    RewriteCond %{REQUEST_URI} ^/storage/ [OR]
+    RewriteCond %{REQUEST_URI} \.(jpg|jpeg|png|gif|webp|svg|ico|pdf|doc|docx|xls|xlsx|zip|rar|mp4|mp3)$ [NC]
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -22,4 +28,19 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Allow access to storage directory
+<IfModule mod_authz_core.c>
+    <DirectoryMatch "^/storage">
+        Require all granted
+    </DirectoryMatch>
+</IfModule>
+
+# Fallback for older Apache versions
+<IfModule !mod_authz_core.c>
+    <DirectoryMatch "^/storage">
+        Order allow,deny
+        Allow from all
+    </DirectoryMatch>
 </IfModule>

@@ -1,108 +1,217 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DormitoryController;
+use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MaintenanceRequestController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ViolationController;
+use App\Http\Controllers\RuleController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Chuyển hướng gốc tới trang đăng nhập hoặc dashboard
+// Redirect root to dashboard or login
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('cloudbox.dashboard');
+        return redirect()->route('dashboard');
     }
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return redirect()->route('cloudbox.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Serve storage files (for Windows/Laragon compatibility)
+// This route handles file serving when symbolic links don't work properly
+Route::get('/storage/{path}', function ($path) {
+    // Prevent directory traversal attacks
+    $path = str_replace('..', '', $path);
+    $path = ltrim($path, '/');
+    
+    $filePath = storage_path('app/public/' . $path);
+    
+    // Ensure the file is within the public storage directory
+    $publicPath = storage_path('app/public');
+    $realFilePath = realpath($filePath);
+    $realPublicPath = realpath($publicPath);
+    
+    if (!$realFilePath || !$realPublicPath) {
+        abort(404);
+    }
+    
+    // Check if file is within public storage directory
+    if (strpos($realFilePath, $realPublicPath) !== 0) {
+        abort(403, 'Access denied');
+    }
+    
+    if (!file_exists($realFilePath) || !is_file($realFilePath)) {
+        abort(404);
+    }
+    
+    $mimeType = mime_content_type($realFilePath) ?: 'application/octet-stream';
+    $fileName = basename($realFilePath);
+    
+    return response()->file($realFilePath, [
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*')->name('storage.serve');
 
-Route::middleware('auth')->group(function () {
+// Dashboard
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// Các route CloudBOX
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FileController;
-use App\Http\Controllers\FileUploadController;
-use App\Http\Controllers\FolderController;
-use App\Http\Controllers\FileShareController;
-use App\Http\Controllers\FolderShareController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminUsersController;
-use App\Http\Controllers\AdminCategoriesController;
-use App\Http\Controllers\UserProfileController;
-
-// Các route CloudBOX - Yêu cầu đăng nhập
-Route::middleware(['auth'])->prefix('cloudbox')->group(function () {
-    // Dashboard & Tệp
-    Route::get('/', [DashboardController::class, 'index'])->name('cloudbox.dashboard');
-    Route::get('/files', [FileController::class, 'index'])->name('cloudbox.files');
-    Route::get('/shared', [FileController::class, 'shared'])->name('cloudbox.shared');
-    Route::get('/recent', [FileController::class, 'recent'])->name('cloudbox.recent');
-    Route::get('/favorites', [FileController::class, 'favorites'])->name('cloudbox.favorites');
-    Route::get('/trash', [FileController::class, 'trash'])->name('cloudbox.trash');
-    Route::post('/trash/cleanup', [FileController::class, 'cleanupTrash'])->name('cloudbox.trash.cleanup');
-    // Hành động hàng loạt cho Thùng rác
-    Route::post('/trash/folders/bulk-restore', [FolderController::class, 'bulkRestore'])->name('cloudbox.trash.folders.bulk-restore');
-    Route::post('/trash/folders/bulk-force-delete', [FolderController::class, 'bulkForceDelete'])->name('cloudbox.trash.folders.bulk-force-delete');
-    Route::post('/trash/files/bulk-restore', [FileUploadController::class, 'bulkRestore'])->name('cloudbox.trash.files.bulk-restore');
-    Route::post('/trash/files/bulk-force-delete', [FileUploadController::class, 'bulkForceDelete'])->name('cloudbox.trash.files.bulk-force-delete');
-
-    // Tải lên & Quản lý tệp
-    Route::post('/files/upload', [FileUploadController::class, 'store'])->name('cloudbox.files.upload');
-    Route::post('/files/check-duplicates', [FileUploadController::class, 'checkDuplicates'])->name('cloudbox.files.check-duplicates');
-    Route::post('/files/bulk-delete', [FileUploadController::class, 'bulkDelete'])->name('cloudbox.files.bulk-delete');
-    Route::get('/files/{id}/view', [FileUploadController::class, 'view'])->name('cloudbox.files.view');
-    Route::get('/files/{id}/download', [FileUploadController::class, 'download'])->name('cloudbox.files.download');
-    Route::put('/files/{id}', [FileUploadController::class, 'update'])->name('cloudbox.files.update');
-    Route::delete('/files/{id}', [FileUploadController::class, 'destroy'])->name('cloudbox.files.delete');
-    Route::post('/files/{id}/restore', [FileUploadController::class, 'restore'])->name('cloudbox.files.restore');
-    Route::delete('/files/{id}/force', [FileUploadController::class, 'forceDelete'])->name('cloudbox.files.force-delete');
-    Route::post('/files/{id}/favorite', [FileUploadController::class, 'toggleFavorite'])->name('cloudbox.files.favorite');
-
-    // Thư mục
-    Route::get('/folders', [FolderController::class, 'index'])->name('cloudbox.folders.index');
-    Route::post('/folders/upload', [FolderController::class, 'uploadFolder'])->name('cloudbox.folders.upload');
-    Route::post('/folders/check-duplicates', [FolderController::class, 'checkDuplicateFolders'])->name('cloudbox.folders.check-duplicates');
-    Route::post('/folders/bulk-delete', [FolderController::class, 'bulkDelete'])->name('cloudbox.folders.bulk-delete');
-    Route::get('/folders/{id}', [FolderController::class, 'show'])->name('cloudbox.folders.show');
-    Route::get('/folders/{id}/edit', [FolderController::class, 'edit'])->name('cloudbox.folders.edit');
-    Route::post('/folders', [FolderController::class, 'store'])->name('cloudbox.folders.store');
-    Route::put('/folders/{id}', [FolderController::class, 'update'])->name('cloudbox.folders.update');
-    Route::delete('/folders/{id}', [FolderController::class, 'destroy'])->name('cloudbox.folders.destroy');
-    Route::post('/folders/{id}/restore', [FolderController::class, 'restore'])->name('cloudbox.folders.restore');
-    Route::delete('/folders/{id}/force', [FolderController::class, 'forceDelete'])->name('cloudbox.folders.force-delete');
-    Route::post('/folders/{id}/favorite', [FolderController::class, 'toggleFavorite'])->name('cloudbox.folders.favorite');
-    // Chia sẻ thư mục
-    Route::post('/folders/{id}/share', [FolderShareController::class, 'store'])->name('cloudbox.folders.share');
-
-    // Chia sẻ tệp
-    Route::post('/files/{id}/share', [FileShareController::class, 'store'])->name('cloudbox.files.share');
-    Route::get('/files/{id}/shares', [FileShareController::class, 'listShares'])->name('cloudbox.files.shares.list');
-    Route::delete('/shares/{id}', [FileShareController::class, 'destroy'])->name('cloudbox.shares.revoke');
     
-    // Trang người dùng
-    Route::get('/user/profile', [UserProfileController::class, 'index'])->name('cloudbox.user.profile');
-    Route::get('/users', function () { return view('pages.user.list'); })->name('cloudbox.user.list');
-    Route::get('/users/add', function () { return view('pages.user.add'); })->name('cloudbox.user.add');
-});
-
-// Khu vực quản trị (Admin) - sử dụng cùng giao diện, yêu cầu đăng nhập + quyền admin
-Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(function () {
-    // /admin → Admin Dashboard
-    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-
-    // Quản lý người dùng trong admin
-    Route::resource('users', AdminUsersController::class)->except(['show']);
+    // Student Routes (Admin only for CRUD)
+    Route::middleware('can:manage-users')->group(function () {
+        Route::resource('students', StudentController::class)->except(['show']);
+    });
+    // Show student detail - available for all authenticated users
+    Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
     
-    // Quản lý danh mục file trong admin
-    Route::resource('categories', AdminCategoriesController::class)->except(['show', 'create', 'edit']);
+    // Student's own pages
+    Route::get('/my-profile', [StudentController::class, 'myProfile'])->name('students.my-profile');
+    Route::get('/my-room', [StudentController::class, 'myRoom'])->name('students.my-room');
+    Route::get('/my-invoices', [StudentController::class, 'myInvoices'])->name('students.my-invoices');
+    Route::get('/my-payments', [StudentController::class, 'myPayments'])->name('students.my-payments');
+    Route::get('/my-maintenance', [StudentController::class, 'myMaintenance'])->name('students.my-maintenance');
+    
+    // Room & Building Management (Admin only)
+    Route::middleware('can:manage-rooms')->group(function () {
+        Route::resource('dormitories', DormitoryController::class);
+        Route::resource('buildings', BuildingController::class);
+        Route::resource('rooms', RoomController::class);
+        Route::resource('room-types', RoomTypeController::class);
+        Route::get('/rooms/{room}/availability', [RoomController::class, 'checkAvailability'])->name('rooms.availability');
+    });
+    
+    // Contract Management (Admin can manage all, Students can only view their own)
+    Route::middleware('can:manage-contracts')->group(function () {
+        Route::get('/contracts', [ContractController::class, 'index'])->name('contracts.index');
+        Route::get('/contracts/create', [ContractController::class, 'create'])->name('contracts.create');
+        Route::post('/contracts', [ContractController::class, 'store'])->name('contracts.store');
+        Route::get('/contracts/{contract}/edit', [ContractController::class, 'edit'])->name('contracts.edit');
+        Route::put('/contracts/{contract}', [ContractController::class, 'update'])->name('contracts.update');
+        Route::delete('/contracts/{contract}', [ContractController::class, 'destroy'])->name('contracts.destroy');
+        Route::post('/contracts/{contract}/sign', [ContractController::class, 'sign'])->name('contracts.sign');
+        Route::post('/contracts/{contract}/terminate', [ContractController::class, 'terminate'])->name('contracts.terminate');
+        Route::post('/contracts/{contract}/renew', [ContractController::class, 'renew'])->name('contracts.renew');
+    });
+    // View contract detail - students can view their own
+    Route::get('/contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
+    
+    // Student room registration (students register for themselves)
+    Route::get('/register-room', [ContractController::class, 'registerRoom'])->name('contracts.register-room');
+    Route::post('/register-room', [ContractController::class, 'storeRegistration'])->name('contracts.store-registration');
+    // Student's own contracts list
+    Route::get('/my-contracts', [ContractController::class, 'myContracts'])->name('contracts.my-contracts');
+    
+    // Invoice Management
+    Route::resource('invoices', InvoiceController::class);
+    Route::post('/invoices/{invoice}/generate', [InvoiceController::class, 'generate'])->name('invoices.generate');
+    Route::post('/invoices/bulk-generate', [InvoiceController::class, 'bulkGenerate'])->name('invoices.bulk-generate');
+    
+    // Payment Management
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/create/{invoice}', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+    Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
+    Route::post('/invoices/{invoice}/pay', [PaymentController::class, 'pay'])->name('payments.pay');
+    Route::patch('/payments/{payment}/confirm-cash', [PaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
+    Route::delete('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
+    Route::get('/payment/vnpay/callback', [PaymentController::class, 'vnpayCallback'])->name('payments.vnpay.callback');
+    
+    // Maintenance Request Management
+    Route::resource('maintenance', MaintenanceRequestController::class);
+    Route::post('/maintenance/{maintenance}/assign', [MaintenanceRequestController::class, 'assign'])->name('maintenance.assign');
+    Route::post('/maintenance/{maintenance}/approve', [MaintenanceRequestController::class, 'approve'])->name('maintenance.approve');
+    Route::post('/maintenance/{maintenance}/start', [MaintenanceRequestController::class, 'start'])->name('maintenance.start');
+    Route::post('/maintenance/{maintenance}/process', [MaintenanceRequestController::class, 'process'])->name('maintenance.process');
+    Route::post('/maintenance/{maintenance}/complete', [MaintenanceRequestController::class, 'complete'])->name('maintenance.complete');
+    Route::post('/maintenance/{maintenance}/reject', [MaintenanceRequestController::class, 'reject'])->name('maintenance.reject');
+    
+    // Announcement Management
+    Route::resource('announcements', AnnouncementController::class);
+    Route::post('/announcements/{announcement}/publish', [AnnouncementController::class, 'publish'])->name('announcements.publish');
+    Route::post('/announcements/{announcement}/unpublish', [AnnouncementController::class, 'unpublish'])->name('announcements.unpublish');
+    Route::get('/announcements/public/list', [AnnouncementController::class, 'publicList'])->name('announcements.public');
+    
+    // Violation Management (Admin only)
+    Route::middleware('can:manage-violations')->group(function () {
+        Route::resource('violations', ViolationController::class);
+        Route::post('/violations/{violation}/confirm', [ViolationController::class, 'confirm'])->name('violations.confirm');
+        Route::post('/violations/{violation}/resolve', [ViolationController::class, 'resolve'])->name('violations.resolve');
+        Route::put('/violations/{violation}/mark-paid', [ViolationController::class, 'markPaid'])->name('violations.mark-paid');
+        Route::put('/violations/{violation}/waive-fine', [ViolationController::class, 'waive'])->name('violations.waive-fine');
+        Route::post('/violations/{violation}/waive', [ViolationController::class, 'waive'])->name('violations.waive');
+    });
+
+    // Rule Management (Admin can CRUD, Students can view and acknowledge)
+    Route::get('/rules', [RuleController::class, 'index'])->name('rules.index');
+    Route::middleware('can:manage-users')->group(function () {
+        Route::get('/rules/create', [RuleController::class, 'create'])->name('rules.create');
+        Route::post('/rules', [RuleController::class, 'store'])->name('rules.store');
+        Route::get('/rules/{rule}/edit', [RuleController::class, 'edit'])->name('rules.edit');
+        Route::put('/rules/{rule}', [RuleController::class, 'update'])->name('rules.update');
+        Route::delete('/rules/{rule}', [RuleController::class, 'destroy'])->name('rules.destroy');
+    });
+    Route::get('/rules/{rule}', [RuleController::class, 'show'])->name('rules.show');
+    Route::post('/rules/{rule}/acknowledge', [RuleController::class, 'acknowledge'])->name('rules.acknowledge');
+
+    // Service Management (Admin can CRUD, Students can view and register)
+    Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    Route::get('/my-services', [ServiceController::class, 'myRegistrations'])->name('services.my-registrations');
+    Route::post('/service-registrations/{registration}/cancel', [ServiceController::class, 'cancel'])->name('service-registrations.cancel');
+    Route::middleware('can:manage-users')->group(function () {
+        Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+        Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+        Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+        Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
+        Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+        Route::get('/services/{service}/registrations', [ServiceController::class, 'registrations'])->name('services.registrations');
+        Route::post('/service-registrations/{registration}/approve', [ServiceController::class, 'approve'])->name('service-registrations.approve');
+    });
+    Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');
+    Route::post('/services/{service}/register', [ServiceController::class, 'register'])->name('services.register');
+
+    // User Account Management (Admin only)
+    Route::middleware('can:manage-users')->group(function () {
+        \App::bind('users.controller', function () { return \App\Http\Controllers\UsersController::class; });
+        Route::resource('users', \App\Http\Controllers\UsersController::class)->except(['show']);
+        Route::post('/users/{user}/toggle', [\App\Http\Controllers\UsersController::class, 'toggleActive'])->name('users.toggle');
+    });
 });
 
-// Liên kết chia sẻ công khai (không yêu cầu đăng nhập)
-Route::get('/shared/{token}', [FileShareController::class, 'show'])->name('file.shared');
-Route::get('/shared/{token}/download', [FileShareController::class, 'download'])->name('file.shared.download');
+// Payment Gateway Callbacks (Public routes)
+Route::get('/payment/return', [PaymentController::class, 'vnpayReturn'])->name('payment.return');
+Route::post('/payment/ipn', [PaymentController::class, 'vnpayIPN'])->name('payment.ipn');
+
+// Debug route - remove after testing
+Route::get('/debug-maintenance/{id}', function($id) {
+    $req = \App\Models\MaintenanceRequest::with(['student.user'])->findOrFail($id);
+    
+    return response()->json([
+        'request_code' => $req->request_code,
+        'student_id' => $req->student_id,
+        'has_student_relationship' => $req->student ? true : false,
+        'student' => $req->student ? [
+            'id' => $req->student->id,
+            'full_name' => $req->student->full_name,
+            'student_code' => $req->student->student_code,
+            'user_name' => $req->student->user ? $req->student->user->name : null,
+        ] : null,
+    ], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+});
 
 require __DIR__.'/auth.php';

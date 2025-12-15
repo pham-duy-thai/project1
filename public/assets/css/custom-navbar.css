@@ -1,0 +1,17 @@
+/* Custom Navbar Overrides - safe placeholder to prevent 404 */
+
+/* Adjust avatar spacing and dropdown */
+.iq-top-navbar .navbar-nav .nav-item .dropdown-menu {
+  min-width: 260px;
+}
+
+.iq-top-navbar .navbar-nav .nav-item .dropdown-menu .media .iq-card-icon {
+  width: 36px;
+  height: 36px;
+}
+
+/* Ensure icons are vertically centered */
+.iq-top-navbar .navbar-nav .nav-item > a { display: inline-flex; align-items: center; }
+
+/* Badge dot size tweak */
+.iq-top-navbar .dots { width: 8px; height: 8px; }

@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Sign In - CloudBOX</title>
+    <title>Đăng nhập - Dormitory Management System</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon" />
     
     <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/backend.css') }}">
@@ -26,11 +27,14 @@
                         <div class="sign-user_card">
                             <!-- Logo -->
                             <div class="text-center mb-4">
-                                <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal logo" alt="CloudBOX" style="max-width: 200px;">
+                                <div class="d-inline-block p-3 rounded-circle bg-primary-light">
+                                    <i class="ri-hotel-bed-line text-primary" style="font-size: 48px;"></i>
+                                </div>
+                                <h2 class="mt-3 mb-0">Ký túc xá</h2>
                             </div>
 
-                            <h3 class="mb-2">Sign In</h3>
-                            <p class="text-muted">Login to stay connected.</p>
+                            <h3 class="mb-2">Đăng nhập</h3>
+                            <p class="text-muted">Đăng nhập vào hệ thống quản lý ký túc xá</p>
 
                             <!-- Session Status -->
                             @if (session('status'))
@@ -52,7 +56,7 @@
                                             <input class="floating-input form-control @error('email') is-invalid @enderror" 
                                                    type="email" 
                                                    name="email" 
-                                                   value="{{ old('email', request()->cookie('cloudbox_email')) }}"
+                                                   value="{{ old('email', request()->cookie('cloody_email')) }}"
                                                    placeholder=" " 
                                                    required 
                                                    autofocus>
@@ -71,7 +75,7 @@
                                                    name="password" 
                                                    placeholder=" " 
                                                    required>
-                                            <label>Password</label>
+                                            <label>Mật khẩu</label>
                                             @error('password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -81,14 +85,14 @@
                                     <!-- Remember & Forgot -->
                                     <div class="col-lg-6">
                                         <div class="custom-control custom-checkbox mb-3 text-left">
-                                            <input type="checkbox" class="custom-control-input" id="remember_me" name="remember" {{ request()->cookie('cloudbox_email') ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="remember_me">Remember Me</label>
+                                            <input type="checkbox" class="custom-control-input" id="remember_me" name="remember" {{ request()->cookie('cloody_email') ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="remember_me">Ghi nhớ đăng nhập</label>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         @if (Route::has('password.request'))
                                             <a href="{{ route('password.request') }}" class="text-primary float-right">
-                                                Forgot Password?
+                                                Quên mật khẩu?
                                             </a>
                                         @endif
                                     </div>
@@ -96,15 +100,14 @@
 
                                 <!-- Submit Button -->
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    <i class="ri-login-box-line mr-2"></i>Sign In
+                                    <i class="ri-login-box-line mr-2"></i>Đăng nhập
                                 </button>
 
                                 <!-- Register Link -->
                                 <p class="mt-3 text-center">
-                                    Don't have an account? 
-                                    <a href="{{ route('register') }}" class="text-primary font-weight-bold">Sign Up</a>
+                                    Chưa có tài khoản? 
+                                    <a href="{{ route('register') }}" class="text-primary font-weight-bold">Đăng ký ngay</a>
                                 </p>
-
                             </form>
                         </div>
                     </div>

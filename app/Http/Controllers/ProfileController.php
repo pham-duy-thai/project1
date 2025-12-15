@@ -7,6 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -39,29 +41,86 @@ class ProfileController extends Controller
         }
         
         // Handle avatar upload
-        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+        if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             
+            Log::info('Avatar upload started', [
+                'user_id' => $user->id,
+                'file_name' => $avatar->getClientOriginalName(),
+                'file_size' => $avatar->getSize(),
+                'mime_type' => $avatar->getMimeType()
+            ]);
+            
+            // Validate file
+            if (!$avatar->isValid()) {
+                Log::error('Avatar file is not valid', ['error' => $avatar->getError()]);
+                return Redirect::route('profile.edit')
+                    ->withErrors(['avatar' => 'File ảnh không hợp lệ.'])
+                    ->withInput();
+            }
+            
             // Delete old avatar if exists
-            if ($user->avatar && file_exists(public_path($user->avatar))) {
-                @unlink(public_path($user->avatar));
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                try {
+                    Storage::disk('public')->delete($user->avatar);
+                    Log::info('Old avatar deleted', ['path' => $user->avatar]);
+                } catch (\Exception $e) {
+                    // Log error but continue
+                    Log::warning('Failed to delete old avatar: ' . $e->getMessage());
+                }
             }
             
             // Generate unique filename
             $avatarName = time() . '_' . $user->id . '.' . $avatar->getClientOriginalExtension();
             
-            // Move file to public/uploads/avatars
+            // Store file to storage/app/public/avatars
             try {
-                $avatar->move(public_path('uploads/avatars'), $avatarName);
-                $user->avatar = 'uploads/avatars/' . $avatarName;
+                $path = $avatar->storeAs('avatars', $avatarName, 'public');
+                
+                Log::info('Avatar stored', ['path' => $path, 'full_path' => storage_path('app/public/' . $path)]);
+                
+                if (!$path) {
+                    Log::error('Avatar store returned false');
+                    return Redirect::route('profile.edit')
+                        ->withErrors(['avatar' => 'Không thể lưu file ảnh.'])
+                        ->withInput();
+                }
+                
+                // Verify file was actually saved
+                if (!Storage::disk('public')->exists($path)) {
+                    Log::error('Avatar file does not exist after store', ['path' => $path]);
+                    return Redirect::route('profile.edit')
+                        ->withErrors(['avatar' => 'File đã được upload nhưng không tìm thấy trong storage.'])
+                        ->withInput();
+                }
+                
+                $user->avatar = $path;
+                Log::info('Avatar path set on user model', ['avatar' => $user->avatar]);
             } catch (\Exception $e) {
-                return Redirect::route('profile.edit')->with('error', 'Failed to upload avatar. Please try again.');
+                Log::error('Avatar upload error', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return Redirect::route('profile.edit')
+                    ->withErrors(['avatar' => 'Lỗi khi upload ảnh: ' . $e->getMessage()])
+                    ->withInput();
             }
         }
 
-        $user->save();
+        try {
+            $saved = $user->save();
+            Log::info('User saved', ['saved' => $saved, 'avatar' => $user->avatar, 'dirty' => $user->getDirty()]);
+        } catch (\Exception $e) {
+            Log::error('Profile update error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return Redirect::route('profile.edit')
+                ->withErrors(['error' => 'Không thể cập nhật hồ sơ: ' . $e->getMessage()])
+                ->withInput();
+        }
 
-        return Redirect::route('cloudbox.user.profile')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**

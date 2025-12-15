@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Sign Up - CloudBOX</title>
+    <title>Đăng ký - Dormitory Management System</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon" />
     
     <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/backend.css') }}">
@@ -26,11 +27,14 @@
                         <div class="sign-user_card">
                             <!-- Logo -->
                             <div class="text-center mb-4">
-                                <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal logo" alt="CloudBOX" style="max-width: 200px;">
+                                <div class="d-inline-block p-3 rounded-circle bg-primary-light">
+                                    <i class="ri-hotel-bed-line text-primary" style="font-size: 48px;"></i>
+                                </div>
+                                <h2 class="mt-3 mb-0">Ký túc xá</h2>
                             </div>
 
-                            <h3 class="mb-2">Sign Up</h3>
-                            <p class="text-muted">Create your CloudBOX account</p>
+                            <h3 class="mb-2">Đăng ký tài khoản</h3>
+                            <p class="text-muted">Tạo tài khoản mới trong hệ thống</p>
 
                             <!-- Register Form -->
                             <form method="POST" action="{{ route('register') }}">
@@ -46,7 +50,7 @@
                                                    placeholder=" " 
                                                    required 
                                                    autofocus>
-                                            <label>Full Name</label>
+                                            <label>Họ và tên</label>
                                             @error('name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -62,7 +66,7 @@
                                                    value="{{ old('email') }}"
                                                    placeholder=" " 
                                                    required>
-                                            <label>Email Address</label>
+                                            <label>Địa chỉ email</label>
                                             @error('email')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -77,7 +81,7 @@
                                                    name="password" 
                                                    placeholder=" " 
                                                    required>
-                                            <label>Password</label>
+                                            <label>Mật khẩu</label>
                                             @error('password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -92,7 +96,7 @@
                                                    name="password_confirmation" 
                                                    placeholder=" " 
                                                    required>
-                                            <label>Confirm Password</label>
+                                            <label>Xác nhận mật khẩu</label>
                                         </div>
                                     </div>
 
@@ -101,7 +105,7 @@
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input type="checkbox" class="custom-control-input" id="terms" required>
                                             <label class="custom-control-label" for="terms">
-                                                I agree to the <a href="#" class="text-primary">Terms & Conditions</a>
+                                                Tôi đồng ý với <a href="#" class="text-primary">điều khoản và điều kiện</a>
                                             </label>
                                         </div>
                                     </div>
@@ -109,13 +113,13 @@
 
                                 <!-- Submit Button -->
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    <i class="ri-user-add-line mr-2"></i>Create Account
+                                    <i class="ri-user-add-line mr-2"></i>Tạo tài khoản
                                 </button>
 
                                 <!-- Login Link -->
                                 <p class="mt-3 text-center">
-                                    Already have an account? 
-                                    <a href="{{ route('login') }}" class="text-primary font-weight-bold">Sign In</a>
+                                    Đã có tài khoản? 
+                                    <a href="{{ route('login') }}" class="text-primary font-weight-bold">Đăng nhập</a>
                                 </p>
                             </form>
                         </div>

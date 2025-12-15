@@ -1,16 +1,483 @@
-# CloudBox - Hệ Thống Quản Lý File Trên Cloud
+# Hệ Thống Quản Lý Ký Túc Xá (Dormitory Management System)
 
 ![Laravel](https://img.shields.io/badge/Laravel-12.0-red.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-CloudBox là một ứng dụng web quản lý file và thư mục trên cloud được xây dựng bằng Laravel Framework. Ứng dụng cung cấp giao diện thân thiện và nhiều tính năng mạnh mẽ để lưu trữ, tổ chức và chia sẻ file một cách dễ dàng.
+Hệ thống quản lý ký túc xá toàn diện được xây dựng bằng Laravel Framework, hỗ trợ quản lý phòng, sinh viên, hợp đồng, thanh toán, bảo trì và nhiều tính năng khác.
 
 ## 📋 Mục Lục
 
 - [Tính Năng](#-tính-năng)
 - [Yêu Cầu Hệ Thống](#-yêu-cầu-hệ-thống)
 - [Cài Đặt](#-cài-đặt)
+- [Cấu Trúc Database](#-cấu-trúc-database)
+- [Hướng Dẫn Sử Dụng](#-hướng-dẫn-sử-dụng)
+- [API Routes](#-api-routes)
+
+## ✨ Tính Năng
+
+### 🏢 Quản Lý Cơ Sở Vật Chất
+- ✅ **Quản lý Ký túc xá**: Thêm, sửa, xóa các khu ký túc xá
+- ✅ **Quản lý Tòa nhà**: Phân chia theo tòa nhà, tầng lầu
+- ✅ **Quản lý Phòng**: 
+  - Phân loại phòng theo số người (2, 4, 6, 8 người)
+  - Trạng thái phòng (còn trống, đã đầy, bảo trì, đã đặt)
+  - Quản lý tiện nghi trong phòng
+  - Upload hình ảnh phòng
+
+### 👥 Quản Lý Sinh Viên
+- ✅ Hồ sơ sinh viên đầy đủ (CMND, địa chỉ, phụ huynh, khoa/ngành)
+- ✅ Theo dõi trạng thái (đang ở, đã tốt nghiệp, đình chỉ)
+- ✅ Xem lịch sử thuê phòng
+- ✅ Dashboard cá nhân cho sinh viên
+
+### 📝 Quản Lý Hợp Đồng
+- ✅ Tạo hợp đồng thuê phòng
+- ✅ Ký điện tử hợp đồng
+- ✅ Gia hạn/Chấm dứt hợp đồng
+- ✅ Theo dõi thời hạn hợp đồng
+- ✅ Quản lý tiền cọc
+
+### 💰 Quản Lý Tài Chính
+- ✅ **Hóa đơn tự động**: 
+  - Tiền thuê phòng
+  - Tiền điện, nước
+  - Phí dịch vụ
+- ✅ **Thanh toán đa dạng**:
+  - Tiền mặt
+  - Chuyển khoản ngân hàng
+  - VNPay, MoMo, ZaloPay
+- ✅ In biên lai thanh toán
+- ✅ Theo dõi công nợ
+- ✅ Thống kê doanh thu
+
+### 🔧 Quản Lý Bảo Trì
+- ✅ Sinh viên gửi yêu cầu sửa chữa
+- ✅ Phân loại theo mức độ ưu tiên
+- ✅ Gán nhiệm vụ cho nhân viên
+- ✅ Theo dõi tiến độ xử lý
+- ✅ Tính toán chi phí sửa chữa
+
+### ⚠️ Quản Lý Vi Phạm
+- ✅ Ghi nhận vi phạm nội quy
+- ✅ Phân loại mức độ nghiêm trọng
+- ✅ Quản lý tiền phạt
+- ✅ Lưu bằng chứng (hình ảnh, file)
+- ✅ Theo dõi lịch sử vi phạm
+
+### 📢 Thông Báo & Công Bố
+- ✅ Đăng thông báo cho sinh viên
+- ✅ Phân loại theo loại (chung, bảo trì, thanh toán, sự kiện)
+- ✅ Đặt mức độ ưu tiên
+- ✅ Gửi email tự động
+- ✅ Lên lịch xuất bản
+
+### 🔐 Phân Quyền & Bảo Mật
+- ✅ **3 vai trò**:
+  - Admin: Toàn quyền quản lý
+  - Manager: Quản lý hàng ngày
+  - Student: Xem và quản lý thông tin cá nhân
+- ✅ Xác thực người dùng (Laravel Breeze)
+- ✅ Bảo mật dữ liệu sinh viên
+
+## 💻 Yêu Cầu Hệ Thống
+
+- **PHP**: >= 8.2
+- **Composer**: >= 2.0
+- **Node.js**: >= 18.x
+- **Database**: MySQL 8.0+
+- **Web Server**: Apache/Nginx
+
+## 🚀 Cài Đặt
+
+### Bước 1: Clone & Setup
+
+```bash
+git clone https://github.com/your-repo/dormitory_laravel.git
+cd dormitory_laravel
+composer install
+npm install
+```
+
+### Bước 2: Cấu Hình Environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Cập nhật file `.env`:
+
+```env
+APP_NAME="Dormitory Management System"
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dormitory_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+# VNPay Configuration (nếu sử dụng thanh toán online)
+VNPAY_TMN_CODE=your_tmn_code
+VNPAY_HASH_SECRET=your_hash_secret
+VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+VNPAY_RETURN_URL="${APP_URL}/payment/vnpay/callback"
+
+# Dormitory Settings
+DORMITORY_MAX_ROOM_CAPACITY=8
+DORMITORY_MIN_CONTRACT_MONTHS=3
+DORMITORY_MAX_CONTRACT_MONTHS=12
+DORMITORY_PAYMENT_DUE_DAYS=7
+```
+
+### Bước 3: Chạy Migration & Seeder
+
+```bash
+php artisan migrate:fresh
+php artisan db:seed
+```
+
+### Bước 4: Build Assets & Chạy Server
+
+```bash
+npm run dev
+
+# Terminal mới
+php artisan serve
+```
+
+Truy cập: `http://localhost:8000`
+
+### Tài Khoản Mặc Định
+
+- **Admin**: 
+  - Email: `admin@dormitory.com`
+  - Password: `password`
+  
+- **Manager**: 
+  - Email: `manager@dormitory.com`
+  - Password: `password`
+
+## 📊 Cấu Trúc Database
+
+### Core Tables
+
+#### 1. `dormitories` - Ký Túc Xá
+```sql
+- id, name, code, address
+- phone, email, description
+- total_buildings, total_rooms, total_capacity
+- is_active, timestamps
+```
+
+#### 2. `buildings` - Tòa Nhà
+```sql
+- id, dormitory_id
+- name, code, floors, total_rooms
+- gender (male/female/mixed)
+- is_active, timestamps
+```
+
+#### 3. `room_types` - Loại Phòng
+```sql
+- id, name, code, capacity
+- price_per_month, price_per_semester, price_per_year
+- amenities (JSON), description
+- is_active, timestamps
+```
+
+#### 4. `rooms` - Phòng
+```sql
+- id, building_id, room_type_id
+- room_number, floor, capacity, current_occupancy
+- status (available/occupied/maintenance/reserved)
+- area, images (JSON), notes
+- is_active, timestamps
+```
+
+#### 5. `students` - Sinh Viên
+```sql
+- id, user_id, student_code
+- full_name, date_of_birth, gender
+- phone, email, citizen_id, citizen_id_date, citizen_id_place
+- permanent_address, current_address
+- parent_name, parent_phone, parent_relationship
+- faculty, major, class, academic_year
+- status (active/inactive/graduated/suspended)
+- timestamps
+```
+
+#### 6. `contracts` - Hợp Đồng
+```sql
+- id, contract_number, student_id, room_id
+- start_date, end_date
+- monthly_rent, deposit_amount, total_amount
+- payment_cycle (monthly/semester/yearly)
+- signed_at, signed_by_student, signed_by_manager
+- status (pending/active/expired/terminated/cancelled)
+- notes, timestamps
+```
+
+#### 7. `invoices` - Hóa Đơn
+```sql
+- id, invoice_number, contract_id, student_id
+- invoice_type, billing_period_start/end
+- room_price, electricity_usage, electricity_cost
+- water_usage, water_cost, service_cost, other_costs
+- total_amount, paid_amount, remaining_amount
+- due_date, payment_status
+- notes, timestamps
+```
+
+#### 8. `payments` - Thanh Toán
+```sql
+- id, payment_code, invoice_id, student_id
+- amount, payment_method, payment_date
+- transaction_id, vnpay_data (JSON)
+- status (pending/completed/failed/cancelled/refunded)
+- notes, timestamps
+```
+
+#### 9. `maintenance_requests` - Yêu Cầu Bảo Trì
+```sql
+- id, request_code, room_id, student_id
+- title, description
+- category (plumbing/electrical/furniture/air_conditioning/internet/other)
+- priority (low/medium/high/urgent)
+- status (pending/approved/in_progress/completed/rejected/cancelled)
+- assigned_to, scheduled_date, completed_at
+- cost, notes, timestamps
+```
+
+#### 10. `amenities` & `room_amenities` - Tiện Nghi
+```sql
+amenities: id, name, code, description, icon
+room_amenities: room_id, amenity_id, quantity, condition, notes
+```
+
+#### 11. `violations` - Vi Phạm
+```sql
+- id, violation_code, student_id, room_id
+- title, description
+- severity (minor/moderate/serious/critical)
+- violation_date, fine_amount
+- fine_status (unpaid/paid/waived)
+- reported_by, evidence (JSON)
+- status (pending/confirmed/appealed/resolved)
+- resolved_at, timestamps
+```
+
+#### 12. `announcements` - Thông Báo
+```sql
+- id, title, content
+- type (general/maintenance/payment/event/emergency/rule)
+- priority (low/normal/high/urgent)
+- created_by, published_at, expires_at
+- is_published, send_email, send_notification
+- target_audience (JSON), timestamps
+```
+
+### Relationships
+
+```
+dormitories → buildings → rooms → contracts
+students → contracts → invoices → payments
+rooms → maintenance_requests
+students → violations
+users → announcements (created_by)
+rooms → amenities (many-to-many)
+```
+
+## 📖 Hướng Dẫn Sử Dụng
+
+### Dành Cho Admin/Manager
+
+#### 1. Quản Lý Phòng
+```
+Dashboard → Rooms Management
+- Thêm phòng mới
+- Cập nhật trạng thái phòng
+- Upload hình ảnh phòng
+- Thêm tiện nghi
+```
+
+#### 2. Đăng Ký Sinh Viên Vào Phòng
+```
+Students → Add New Student
+- Nhập thông tin sinh viên
+- Chọn phòng còn trống
+- Tạo hợp đồng
+- Tính tiền đặt cọc
+```
+
+#### 3. Quản Lý Hóa Đơn
+```
+Invoices → Create Invoice
+- Tự động tạo hóa đơn theo chu kỳ
+- Nhập chỉ số điện/nước
+- Tính tổng tiền
+- Gửi thông báo cho sinh viên
+```
+
+#### 4. Xử Lý Thanh Toán
+```
+Payments → View Payments
+- Xác nhận thanh toán tiền mặt
+- Theo dõi thanh toán online
+- In biên lai
+```
+
+#### 5. Xử Lý Bảo Trì
+```
+Maintenance → View Requests
+- Xem yêu cầu mới
+- Phân công nhân viên
+- Cập nhật tiến độ
+- Nhập chi phí
+```
+
+### Dành Cho Sinh Viên
+
+#### 1. Xem Thông Tin Phòng
+```
+Dashboard → My Room
+- Xem thông tin phòng hiện tại
+- Danh sách bạn cùng phòng
+- Tiện nghi trong phòng
+```
+
+#### 2. Thanh Toán Hóa Đơn
+```
+My Invoices → Unpaid Invoices
+- Chọn hóa đơn cần thanh toán
+- Chọn phương thức (VNPay/MoMo/ZaloPay)
+- Thanh toán online
+```
+
+#### 3. Gửi Yêu Cầu Bảo Trì
+```
+Maintenance → Create Request
+- Mô tả vấn đề
+- Upload hình ảnh
+- Chọn mức độ khẩn cấp
+- Gửi yêu cầu
+```
+
+#### 4. Xem Thông Báo
+```
+Announcements
+- Đọc thông báo mới
+- Lọc theo loại thông báo
+- Tìm kiếm thông báo cũ
+```
+
+## 🔌 API Routes
+
+### Authentication
+```php
+POST   /login              // Đăng nhập
+POST   /register           // Đăng ký
+POST   /logout             // Đăng xuất
+```
+
+### Dormitories (Admin/Manager)
+```php
+GET    /dormitories        // Danh sách ký túc xá
+POST   /dormitories        // Tạo mới
+GET    /dormitories/{id}   // Chi tiết
+PUT    /dormitories/{id}   // Cập nhật
+DELETE /dormitories/{id}   // Xóa
+```
+
+### Rooms (Admin/Manager)
+```php
+GET    /rooms              // Danh sách phòng
+POST   /rooms              // Tạo phòng mới
+GET    /rooms/{id}         // Chi tiết phòng
+PUT    /rooms/{id}         // Cập nhật phòng
+GET    /rooms/available    // Phòng còn trống
+```
+
+### Students
+```php
+GET    /students           // Danh sách sinh viên (Admin/Manager)
+POST   /students           // Thêm sinh viên (Admin/Manager)
+GET    /students/{id}      // Thông tin sinh viên
+PUT    /students/{id}      // Cập nhật (Admin/Manager/Own)
+```
+
+### Contracts
+```php
+GET    /contracts          // Danh sách hợp đồng
+POST   /contracts          // Tạo hợp đồng (Admin/Manager)
+GET    /contracts/{id}     // Chi tiết hợp đồng
+PUT    /contracts/{id}     // Gia hạn/Chấm dứt (Admin/Manager)
+POST   /contracts/{id}/sign // Ký hợp đồng
+```
+
+### Invoices
+```php
+GET    /invoices           // Danh sách hóa đơn
+POST   /invoices           // Tạo hóa đơn (Admin/Manager)
+GET    /invoices/{id}      // Chi tiết hóa đơn
+PUT    /invoices/{id}      // Cập nhật hóa đơn (Admin/Manager)
+GET    /invoices/my        // Hóa đơn của tôi (Student)
+```
+
+### Payments
+```php
+GET    /payments           // Danh sách thanh toán
+POST   /payments/{invoice} // Thanh toán hóa đơn
+GET    /payments/{id}      // Chi tiết thanh toán
+GET    /payment/vnpay/callback // VNPay callback
+```
+
+### Maintenance Requests
+```php
+GET    /maintenance        // Danh sách yêu cầu
+POST   /maintenance        // Tạo yêu cầu
+GET    /maintenance/{id}   // Chi tiết
+PUT    /maintenance/{id}   // Cập nhật (Admin/Manager)
+DELETE /maintenance/{id}   // Xóa
+```
+
+### Announcements
+```php
+GET    /announcements      // Danh sách thông báo
+POST   /announcements      // Tạo thông báo (Admin/Manager)
+GET    /announcements/{id} // Chi tiết
+PUT    /announcements/{id} // Cập nhật (Admin/Manager)
+DELETE /announcements/{id} // Xóa (Admin/Manager)
+```
+
+## 🛠️ Công Nghệ Sử Dụng
+
+- **Backend**: Laravel 12.0
+- **Frontend**: Blade Templates, TailwindCSS 3.x, Alpine.js 3.x
+- **Database**: MySQL 8.0+
+- **Authentication**: Laravel Breeze
+- **Payment Gateway**: VNPay, MoMo, ZaloPay
+- **Build Tool**: Vite 7.x
+
+## 📝 Todo List
+
+- [ ] Implement controller logic cho tất cả features
+- [ ] Tạo views (Blade templates) cho UI
+- [ ] Implement CheckRole middleware
+- [ ] Tạo Gates & Policies cho authorization
+- [ ] Tạo seeders cho dữ liệu mẫu
+- [ ] Xóa các file CloudBox cũ
+- [ ] Viết tests (Unit & Feature)
+- [ ] Tối ưu hóa queries (eager loading)
+- [ ] Thêm export Excel cho báo cáo
+- [ ] Thêm API documentation (Swagger)
+
+## 📄 License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 - [Cấu Hình](#-cấu-hình)
 - [Sử Dụng](#-sử-dụng)
 - [Cấu Trúc Thư Mục](#-cấu-trúc-thư-mục)

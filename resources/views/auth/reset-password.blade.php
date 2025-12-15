@@ -3,10 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Reset Password - CloudBOX</title>
+    <title>Reset Password - Cloody</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/cloud.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('assets/images/cloud.png') }}" type="image/png" />
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/cloud.png') }}" />
     
     <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/backend.css') }}">
@@ -27,8 +29,8 @@
                 <div class="row justify-content-center align-items-center height-self-center">
                     <div class="col-md-5 col-sm-12 col-12 align-self-center">
                         <div class="sign-user_card">
-                            <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo logo" alt="logo">
-                            <img src="{{ asset('assets/images/logo-white.png') }}" class="img-fluid rounded-normal darkmode-logo logo" alt="logo">
+                            <img src="{{ asset('assets/images/Cloody.png') }}" class="img-fluid rounded-normal light-logo logo" alt="logo">
+                            <img src="{{ asset('assets/images/cloud.png') }}" class="img-fluid rounded-normal darkmode-logo logo" alt="logo">
                             
                             <h2 class="mb-3">Reset Password</h2>
                             <p>Create your new password</p>

@@ -3,183 +3,115 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                 <i class="ri-menu-line wrapper-menu"></i>
-                <a href="{{ route('cloudbox.dashboard') }}" class="header-logo">
-                    <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
+                <a href="{{ route('dashboard') }}" class="header-logo d-flex align-items-center">
+                    <i class="ri-hotel-bed-line text-primary" style="font-size: 32px;"></i>
+                    <span class="ml-2 font-weight-bold">Ký túc xá</span>
                 </a>
             </div>
-            <div class="iq-search-bar device-search">
-                <form>
-                    <div class="input-prepend input-append">
-                        <div class="btn-group">
-                            <label class="dropdown-toggle searchbox" data-toggle="dropdown">
-                                <input class="dropdown-toggle search-query text search-input" type="text" placeholder="Type here to search...">
-                                <span class="search-replace"></span>
-                                <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                                <span class="caret"><!--icon--></span>
-                            </label>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><div class="item"><i class="far fa-file-pdf bg-info"></i>PDFs</div></a></li>
-                                <li><a href="#"><div class="item"><i class="far fa-file-alt bg-primary"></i>Documents</div></a></li>
-                                <li><a href="#"><div class="item"><i class="far fa-file-excel bg-success"></i>Spreadsheet</div></a></li>
-                                <li><a href="#"><div class="item"><i class="far fa-file-powerpoint bg-danger"></i>Presentation</div></a></li>
-                                <li><a href="#"><div class="item"><i class="far fa-file-image bg-warning"></i>Photos & Images</div></a></li>
-                                <li><a href="#"><div class="item"><i class="far fa-file-video bg-info"></i>Videos</div></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="d-flex align-items-center">
             
-                </div>
+            <div class="d-flex align-items-center ml-auto">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
                     <i class="ri-menu-3-line"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto navbar-list align-items-center">
-                        <li class="nav-item nav-icon search-content">
-                            <a href="#" class="search-toggle rounded" id="dropdownSearch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ri-search-line"></i>
-                            </a>
-                            <div class="iq-search-bar iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownSearch">
-                                <form action="#" class="searchbox p-2">
-                                    <div class="form-group mb-0 position-relative">
-                                        <input type="text" class="text search-input font-size-12" placeholder="Type here to search...">
-                                        <a href="#" class="search-link"><i class="las la-search"></i></a> 
-                                    </div>
-                                </form>
-                                <ul class="iq-search-suggestion list-unstyled p-3">
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-danger-light rounded mr-3">
-                                                <i class="ri-file-pdf-line font-size-18 text-danger"></i>
-                                            </div>
-                                            <div>PDFs</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-primary-light rounded mr-3">
-                                                <i class="ri-file-text-line font-size-18 text-primary"></i>
-                                            </div>
-                                            <div>Documents</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-success-light rounded mr-3">
-                                                <i class="ri-file-excel-line font-size-18 text-success"></i>
-                                            </div>
-                                            <div>Spreadsheet</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-warning-light rounded mr-3">
-                                                <i class="ri-slideshow-line font-size-18 text-warning"></i>
-                                            </div>
-                                            <div>Presentation</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-info-light rounded mr-3">
-                                                <i class="ri-image-line font-size-18 text-info"></i>
-                                            </div>
-                                            <div>Photos & Images</div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex align-items-center">
-                                            <div class="icon-small bg-danger-light rounded mr-3">
-                                                <i class="ri-video-line font-size-18 text-danger"></i>
-                                            </div>
-                                            <div>Videos</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
+                    <ul class="navbar-nav navbar-list align-items-center">
+                        
+                        <!-- Notifications -->
                         <li class="nav-item nav-icon dropdown">
-                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ri-question-line"></i>
+                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ri-notification-line"></i>
+                                <span class="bg-danger dots"></span>
                             </a>
-                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton01">
+                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton2">
                                 <div class="card shadow-none m-0">
                                     <div class="card-body p-0 ">
-                                        <div class="p-3">
-                                            <a href="#" class="iq-sub-card pt-0"><i class="ri-questionnaire-line"></i>Help</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-recycle-line"></i>Training</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-refresh-line"></i>Updates</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-service-line"></i>Terms and Policy</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-feedback-line"></i>Send Feedback</a>
+                                        <div class="cust-title p-3">
+                                            <h5 class="mb-0">Thông báo</h5>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item nav-icon dropdown"> 
-                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ri-settings-3-line"></i>
-                            </a>
-                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton02">
-                                <div class="card shadow-none m-0">
-                                    <div class="card-body p-0 ">
-                                        <div class="p-3">
-                                            <a href="#" class="iq-sub-card pt-0"><i class="ri-settings-3-line"></i> Settings</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-hard-drive-line"></i> Get Drive for desktop</a>
-                                            <a href="#" class="iq-sub-card"><i class="ri-keyboard-line"></i> Keyboard Shortcuts</a>
-                                        </div>                                
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item nav-icon dropdown caption-content">
-                            <a href="#" class="search-toggle dropdown-toggle d-flex align-items-center justify-content-center" id="dropdownMenuButton03" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0;">
-                                @if(Auth::user()->avatar)
-                                    <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid #667eea; box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);">
-                                        <img src="{{ asset(Auth::user()->avatar) }}" alt="user" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                                    </div>
-                                @else
-                                    <div class="caption bg-primary line-height">{{ strtoupper(substr(Auth::user()->name ?? 'P', 0, 1)) }}</div>
-                                @endif
-                            </a>
-                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton03">
-                                <div class="card mb-0">
-                                    <div class="card-header d-flex justify-content-between align-items-center mb-0">
-                                        <div class="header-title">
-                                            <h4 class="card-title mb-0">Profile</h4>
-                                        </div>
-                                        <div class="close-data text-right badge badge-primary cursor-pointer "><i class="ri-close-fill"></i></div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="profile-header">
-                                            <div class="cover-container text-center">
-                                                @if(Auth::user()->avatar)
-                                                    <div style="width: 80px; height: 80px; margin: 0 auto;">
-                                                        <img src="{{ asset(Auth::user()->avatar) }}" class="rounded-circle" alt="avatar" style="width: 100%; height: 100%; object-fit: cover; border: 3px solid #667eea; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                                        <div class="px-3 pt-0 pb-0 sub-card">
+                                            <a href="{{ route('announcements.index') }}" class="iq-sub-card">
+                                                <div class="media align-items-center cust-card py-3">
+                                                    <div>
+                                                        <i class="ri-notification-line text-primary mr-3" style="font-size: 24px;"></i>
                                                     </div>
-                                                @else
-                                                    <div class="rounded-circle profile-icon bg-primary mx-auto d-block" style="width: 80px; height: 80px; line-height: 80px; font-size: 32px;">
-                                                        {{ strtoupper(substr(Auth::user()->name ?? 'P', 0, 1)) }}
+                                                    <div class="media-body ml-3">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <h6 class="mb-0">Xem tất cả thông báo</h6>
+                                                        </div>
                                                     </div>
-                                                @endif
-                                                <div class="profile-detail mt-3">
-                                                    <h5><a href="{{ route('cloudbox.user.profile') }}">{{ Auth::user()->name ?? 'User Name' }}</a></h5>
-                                                    <p>{{ Auth::user()->email ?? 'user@example.com' }}</p>
                                                 </div>
-                                                <form method="POST" action="{{ route('logout') }}">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-primary">Sign Out</button>
-                                                </form>
+                                            </a>
+                                        </div>
+                                        <a class="right-ic btn btn-primary btn-block position-relative p-2" href="{{ route('announcements.index') }}" role="button">
+                                            Xem tất cả
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- User Profile -->
+                        <li class="nav-item nav-icon dropdown caption-content">
+                            <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ Auth::user()->avatar_url ?? asset('assets/images/user/user-1.jpg') }}" class="rounded-circle" alt="user" style="width: 45px; height: 45px; min-width: 40px; min-height: 40px; object-fit: cover; border-radius: 50% !important; display: block;" onerror="this.onerror=null;this.src='{{ asset('assets/images/user/user-1.jpg') }}';">
+                            </a>
+                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                                <div class="card shadow-none m-0">
+                                    <div class="card-body p-0 text-center">
+                                        <div class="media-body profile-detail text-center">
+                                            <img src="{{ Auth::user()->avatar_url ?? asset('assets/images/user/user-1.jpg') }}" alt="profile-bg" class="rounded-circle mb-3" style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; object-fit: cover; border-radius: 50% !important; display: block; margin-left: auto; margin-right: auto;" onerror="this.onerror=null;this.src='{{ asset('assets/images/user/user-1.jpg') }}';">
+                                            <h5><a href="{{ route('profile.edit') }}">{{ Auth::user()->name ?? 'User Name' }}</a></h5>
+                                            <p class="mb-0">{{ Auth::user()->email }}</p>
+                                            <p class="mb-0">
+                                                @if(Auth::user()->isAdmin())
+                                                    <span class="badge badge-danger">Admin</span>
+                                                @elseif(Auth::user()->isStudent())
+                                                    <span class="badge badge-info">Manager</span>
+                                                @else
+                                                    <span class="badge badge-success">Sinh viên</span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <a href="{{ route('profile.edit') }}" class="iq-sub-card iq-bg-primary-hover">
+                                        <div class="media align-items-center">
+                                            <div class="rounded-circle iq-card-icon iq-bg-primary mr-3">
+                                                <i class="ri-user-line"></i>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mb-0">Thông tin cá nhân</h6>
+                                                <p class="mb-0 font-size-12">Xem và chỉnh sửa</p>
                                             </div>
                                         </div>
+                                    </a>
+                                    @if(Auth::user()->isStudent())
+                                    <a href="{{ route('students.my-room') }}" class="iq-sub-card iq-bg-warning-hover">
+                                        <div class="media align-items-center">
+                                            <div class="rounded-circle iq-card-icon iq-bg-warning mr-3">
+                                                <i class="ri-home-line"></i>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mb-0">Phòng của tôi</h6>
+                                                <p class="mb-0 font-size-12">Thông tin phòng ở</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    <div class="d-inline-block w-100 text-center p-3">
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary iq-sign-btn" role="button">
+                                                Đăng xuất <i class="ri-login-box-line ml-2"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </li>
-                    </ul>                     
-                </div> 
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>

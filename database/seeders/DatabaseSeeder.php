@@ -15,18 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@cloudbox.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@cloudbox.com',
-            'password' => bcrypt('password'),
+        // Run dormitory seeder for complete sample data
+        $this->call([
+            DormitorySeeder::class,
         ]);
     }
 }

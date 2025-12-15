@@ -1,136 +1,187 @@
-@php
-    // Dữ liệu lưu trữ hiện được cung cấp bởi AppServiceProvider
-    // Gỡ lỗi: Kiểm tra nếu các biến đã được thiết lập
-    if (!isset($storageUsedGB)) {
-        $storageUsedGB = 0;
-        $storageLimit = 100;
-        $storagePercent = 0;
-        
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $storageUsed = App\Models\File::where('user_id', $userId)
-                ->where('is_trash', false)
-                ->sum('size');
-            
-            $storageUsedGB = $storageUsed / (1024 * 1024 * 1024);
-            $storagePercent = min(($storageUsedGB / $storageLimit) * 100, 100);
-        }
-    }
-@endphp
-
 <div class="iq-sidebar sidebar-default">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
-        <a href="{{ route('cloudbox.dashboard') }}" class="header-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
+        <a href="{{ route('dashboard') }}" class="header-logo">
+            <div class="d-inline-block p-2 rounded-circle bg-primary-light">
+                <i class="ri-hotel-bed-line text-primary" style="font-size: 32px;"></i>
+            </div>
+            <span class="ml-2 font-weight-bold" style="font-size: 18px;">Ký túc xá</span>
         </a>
         <div class="iq-menu-bt-sidebar">
             <i class="las la-bars wrapper-menu"></i>
         </div>
     </div>
-    <div class="data-scrollbar" data-scroll="1">
-        <div class="new-create select-dropdown input-prepend input-append">
-            <div class="btn-group">
-                <div data-toggle="dropdown">
-                    <div class="search-query selet-caption"><i class="las la-plus pr-2"></i>Create New</div>
-                    <span class="search-replace"></span>
-                    <span class="caret"></span>
-                </div>
-                <ul class="dropdown-menu">
-                    <li><div class="item" onclick="$('#createFolderModal').modal('show');" style="cursor: pointer;"><i class="ri-folder-add-line pr-3"></i>New Folder</div></li>
-                    <li><div class="item" onclick="$('#uploadFileModal').modal('show');" style="cursor: pointer;"><i class="ri-file-upload-line pr-3"></i>Upload Files</div></li>
-                    <li><div class="item" onclick="$('#uploadFolderModal').modal('show');" style="cursor: pointer;"><i class="ri-folder-upload-line pr-3"></i>Upload Folders</div></li>
-                </ul>
-            </div>
-        </div>
+    <div class="data-scrollbar sidebar-scrollable" data-scroll="1">
         <nav class="iq-sidebar-menu">
             <ul id="iq-sidebar-toggle" class="iq-menu">
-                @if (request()->routeIs('admin.*'))
-                <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('admin.dashboard') }}">
-                        <i class="las la-tachometer-alt"></i><span>Admin Dashboard</span>
+                <!-- Dashboard -->
+                <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}">
+                        <i class="ri-dashboard-line iq-arrow-left"></i><span>Dashboard</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.users.index') }}">
-                        <i class="las la-users-cog"></i><span>Manage Users</span>
+
+                @if(Auth::user()->isAdmin())
+                <!-- Quản lý Ký túc xá -->
+                <li class="{{ request()->routeIs('dormitories.*') ? 'active' : '' }}">
+                    <a href="{{ route('dormitories.index') }}">
+                        <i class="ri-building-line iq-arrow-left"></i><span>Ký túc xá</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.categories.index') }}">
-                        <i class="las la-tags"></i><span>File Categories</span>
+
+                <!-- Quản lý Tòa nhà -->
+                <li class="{{ request()->routeIs('buildings.*') ? 'active' : '' }}">
+                    <a href="{{ route('buildings.index') }}">
+                        <i class="ri-home-line iq-arrow-left"></i><span>Tòa nhà</span>
                     </a>
                 </li>
-                @else
-                <li class="{{ request()->routeIs('cloudbox.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.dashboard') }}" class="{{ request()->routeIs('cloudbox.dashboard') ? 'active' : '' }}">
-                        <i class="las la-home iq-arrow-left"></i><span>Dashboard</span>
+
+                <!-- Quản lý Phòng -->
+                <li class="{{ request()->routeIs('rooms.*') ? 'active' : '' }}">
+                    <a href="{{ route('rooms.index') }}">
+                        <i class="ri-hotel-bed-line iq-arrow-left"></i><span>Phòng</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('cloudbox.files', 'cloudbox.folders.*') ? 'active' : '' }}">
-                    <a href="#mydrive" class="{{ request()->routeIs('cloudbox.files', 'cloudbox.folders.*') ? '' : 'collapsed' }}" data-toggle="collapse" aria-expanded="{{ request()->routeIs('cloudbox.files', 'cloudbox.folders.*') ? 'true' : 'false' }}">
-                        <i class="las la-hdd"></i><span>My Drive</span>
-                        <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                        <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                    </a>
-                    <ul id="mydrive" class="iq-submenu collapse {{ request()->routeIs('cloudbox.files', 'cloudbox.folders.*') ? 'show' : '' }}" data-parent="#iq-sidebar-toggle">
-                        <li class="{{ request()->routeIs('cloudbox.files') ? 'active' : '' }}"><a href="{{ route('cloudbox.files') }}"><i class="las la-folder"></i><span>My Files</span></a></li>
-                        <li class="{{ request()->routeIs('cloudbox.folders.*') ? 'active' : '' }}"><a href="{{ route('cloudbox.folders.index') }}"><i class="las la-folder-open"></i><span>Folders</span></a></li>
-                    </ul>
-                </li>
-                <li class="{{ request()->routeIs('cloudbox.shared') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.shared') }}" class="{{ request()->routeIs('cloudbox.shared') ? 'active' : '' }}">
-                        <i class="las la-share-alt iq-arrow-left"></i><span>Share With Me</span>
+
+                <!-- Quản lý Sinh viên -->
+                <li class="{{ request()->routeIs('students.*') ? 'active' : '' }}">
+                    <a href="{{ route('students.index') }}">
+                        <i class="ri-user-line iq-arrow-left"></i><span>Sinh viên</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('cloudbox.recent') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.recent') }}" class="{{ request()->routeIs('cloudbox.recent') ? 'active' : '' }}">
-                        <i class="las la-clock iq-arrow-left"></i><span>Recent Files</span>
+
+                <!-- Quản lý Tài khoản -->
+                <li class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                    <a href="{{ route('users.index') }}">
+                        <i class="ri-shield-user-line iq-arrow-left"></i><span>Tài khoản</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('cloudbox.favorites') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.favorites') }}" class="{{ request()->routeIs('cloudbox.favorites') ? 'active' : '' }}">
-                        <i class="las la-star iq-arrow-left"></i><span>Favorites</span>
+
+                <!-- Quản lý Hợp đồng -->
+                <li class="{{ request()->routeIs('contracts.*') ? 'active' : '' }}">
+                    <a href="{{ route('contracts.index') }}">
+                        <i class="ri-file-list-3-line iq-arrow-left"></i><span>Hợp đồng</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('cloudbox.trash') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.trash') }}" class="{{ request()->routeIs('cloudbox.trash') ? 'active' : '' }}">
-                        <i class="las la-trash iq-arrow-left"></i><span>Trash</span>
+
+                <!-- Quản lý Hóa đơn -->
+                <li class="{{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+                    <a href="{{ route('invoices.index') }}">
+                        <i class="ri-bill-line iq-arrow-left"></i><span>Hóa đơn</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('cloudbox.user.profile') ? 'active' : '' }}">
-                    <a href="{{ route('cloudbox.user.profile') }}">
-                        <i class="las la-id-card-alt"></i><span>Profile</span>
+
+                <!-- Thanh toán -->
+                <li class="{{ request()->routeIs('payments.*') ? 'active' : '' }}">
+                    <a href="{{ route('payments.index') }}">
+                        <i class="ri-money-dollar-circle-line iq-arrow-left"></i><span>Thanh toán</span>
+                    </a>
+                </li>
+
+                <!-- Bảo trì -->
+                <li class="{{ request()->routeIs('maintenance.*') ? 'active' : '' }}">
+                    <a href="{{ route('maintenance.index') }}">
+                        <i class="ri-tools-line iq-arrow-left"></i><span>Bảo trì</span>
+                    </a>
+                </li>
+
+                <!-- Thông báo -->
+                <li class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">
+                    <a href="{{ route('announcements.index') }}">
+                        <i class="ri-notification-line iq-arrow-left"></i><span>Thông báo</span>
+                    </a>
+                </li>
+
+                <!-- Vi phạm -->
+                <li class="{{ request()->routeIs('violations.*') ? 'active' : '' }}">
+                    <a href="{{ route('violations.index') }}">
+                        <i class="ri-alert-line iq-arrow-left"></i><span>Vi phạm</span>
+                    </a>
+                </li>
+
+                <!-- Nội quy -->
+                <li class="{{ request()->routeIs('rules.*') ? 'active' : '' }}">
+                    <a href="{{ route('rules.index') }}">
+                        <i class="ri-book-2-line iq-arrow-left"></i><span>Nội quy</span>
+                    </a>
+                </li>
+
+                <!-- Dịch vụ -->
+                <li class="{{ request()->routeIs('services.*') ? 'active' : '' }}">
+                    <a href="{{ route('services.index') }}">
+                        <i class="ri-service-line iq-arrow-left"></i><span>Dịch vụ</span>
+                    </a>
+                </li>
+                @endif
+
+                @if(Auth::user()->isStudent())
+                @php($student = Auth::user()->student)
+                @php($hasContract = $student ? \App\Models\Contract::where('student_id',$student->id)->whereIn('status',['pending','active'])->exists() : false)
+                <!-- Trang cá nhân -->
+                <li class="{{ request()->routeIs('students.my-profile') ? 'active' : '' }}">
+                    <a href="{{ route('students.my-profile') }}">
+                        <i class="ri-user-line iq-arrow-left"></i><span>Trang cá nhân</span>
+                    </a>
+                </li>
+                <!-- Phòng của tôi -->
+                <li class="{{ request()->routeIs('students.my-room') ? 'active' : '' }}">
+                    <a href="{{ route('students.my-room') }}">
+                        <i class="ri-hotel-bed-line iq-arrow-left"></i><span>Phòng của tôi</span>
+                    </a>
+                </li>
+                <!-- Hợp đồng của tôi -->
+                <li class="{{ request()->routeIs('contracts.my-contracts') ? 'active' : '' }}">
+                    <a href="{{ route('contracts.my-contracts') }}">
+                        <i class="ri-file-list-3-line iq-arrow-left"></i><span>Hợp đồng</span>
+                    </a>
+                </li>
+                @if(!$hasContract)
+                <!-- Đăng ký phòng -->
+                <li class="{{ request()->routeIs('contracts.register-room') ? 'active' : '' }}">
+                    <a href="{{ route('contracts.register-room') }}">
+                        <i class="ri-add-circle-line iq-arrow-left"></i><span>Đăng ký phòng</span>
+                    </a>
+                </li>
+                @endif
+                <!-- Hóa đơn của tôi -->
+                <li class="{{ request()->routeIs('students.my-invoices') ? 'active' : '' }}">
+                    <a href="{{ route('students.my-invoices') }}">
+                        <i class="ri-bill-line iq-arrow-left"></i><span>Hóa đơn</span>
+                    </a>
+                </li>
+                <!-- Thanh toán của tôi -->
+                <li class="{{ request()->routeIs('students.my-payments') ? 'active' : '' }}">
+                    <a href="{{ route('students.my-payments') }}">
+                        <i class="ri-money-dollar-circle-line iq-arrow-left"></i><span>Thanh toán</span>
+                    </a>
+                </li>
+                <!-- Yêu cầu bảo trì -->
+                <li class="{{ request()->routeIs('students.my-maintenance') ? 'active' : '' }}">
+                    <a href="{{ route('students.my-maintenance') }}">
+                        <i class="ri-tools-line iq-arrow-left"></i><span>Bảo trì</span>
+                    </a>
+                </li>
+                <!-- Thông báo -->
+                <li class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}">
+                    <a href="{{ route('announcements.index') }}">
+                        <i class="ri-notification-line iq-arrow-left"></i><span>Thông báo</span>
+                    </a>
+                </li>
+
+                <!-- Nội quy -->
+                <li class="{{ request()->routeIs('rules.*') ? 'active' : '' }}">
+                    <a href="{{ route('rules.index') }}">
+                        <i class="ri-book-2-line iq-arrow-left"></i><span>Nội quy</span>
+                    </a>
+                </li>
+
+                <!-- Dịch vụ -->
+                <li class="{{ request()->routeIs('services.*') ? 'active' : '' }}">
+                    <a href="{{ route('services.index') }}">
+                        <i class="ri-service-line iq-arrow-left"></i><span>Dịch vụ</span>
                     </a>
                 </li>
                 @endif
             </ul>
         </nav>
-        <div class="sidebar-bottom">
-            <h4 class="mb-3"><i class="las la-cloud mr-2"></i>Storage</h4>
-            <p>{{ number_format($storageUsedGB, 2) }} GB of {{ $storageLimit }} GB used</p>
-            <div class="iq-progress-bar mb-3">
-                <span class="bg-primary iq-progress progress-1" data-percent="{{ number_format($storagePercent, 2) }}" style="width: 0%; transition: width 1s ease;">
-                </span>
-            </div>
-            <a href="#" class="btn btn-outline-primary view-more mt-2">Buy Storage</a>
-        </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Hoạt ảnh thanh tiến độ lưu trữ sau khi tải trang
-    setTimeout(function() {
-        const storageBar = document.querySelector('.sidebar-bottom .iq-progress');
-        if (storageBar) {
-            const percent = parseFloat(storageBar.getAttribute('data-percent')) || 0;
-            console.log('Storage bar found, animating to:', percent + '%');
-            storageBar.style.width = percent + '%';
-        } else {
-            console.log('Storage bar not found');
-        }
-    }, 100);
-});
-</script>
-@endpush
